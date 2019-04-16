@@ -55,18 +55,18 @@ void scr() { system("clear"); }
 void scrw() { system("cls"); }
 
 
+void f_absolute_users_delete();
 void f_add_users(int ID);
 void f_show_users(int ID);
-void f_standar_menu(char *aux_username);
-void f_admin_menu(char *aux_username, int ID);
 void f_relative_users_delete(int ID);
-void f_absolute_users_delete();
-void f_admin_users_manager_menu(char *aux_username, int ID);
+void f_standar_menu(USER user);
+void f_admin_menu(USER user);
+void f_admin_users_manager_menu(USER user);
 
-int f_login(char *aux_username, int *ID);
-int f_verify_login(char *temp_user, char *temp_pass, int *ID);
+int f_login(USER *user);
+int f_verify_login(char *temp_user, char *temp_pass, USER *user);
 int f_verify_username(char *temp_user);
-int f_verify_id(int temp_id);
+int f_verify_id(int ID);
 
 
 
@@ -190,6 +190,7 @@ void f_add_users(int ID) {
 				gets(aux.username);
 
 
+
 				if ( f_verify_username(aux.username) == 1 ) {
 
 					puts("El nombre de usuario ya existe, ingrese otro");
@@ -275,6 +276,7 @@ void f_add_users(int ID) {
 					v = scanf("%d", &op); buf();
 
 
+
 					if (!v || !(op >= 1 && op <= 2)) {
 
 						puts("Opcion incorrecta, intente de nuevo"); 
@@ -339,6 +341,7 @@ void f_show_users(int ID) {
 				printf("Contraseña: %s\n", aux.password);
 
 
+
 				switch(aux.level) {
 
 					case 2: 
@@ -349,6 +352,7 @@ void f_show_users(int ID) {
 
 						break;
 
+
 					case 1: 
 
 						puts("Nivel: Administrador"); 
@@ -358,6 +362,7 @@ void f_show_users(int ID) {
 						break;
 
 				}
+
 
 
 				puts("");
@@ -379,7 +384,7 @@ void f_show_users(int ID) {
 /*SISTEMA DE INGRESO*/
 //====================
 
-int f_login(char *aux_username, int *ID) {
+int f_login(USER *user) {
 
 	char temp_user[15], temp_pass[15], c;
 	int v, i;
@@ -400,13 +405,13 @@ int f_login(char *aux_username, int *ID) {
 
 		while (c = getch()) {	/*Oculta la contraseña y muestra "*" */
 
-            if (c == '\n') {
+			if (c == '\n') {
 
 					temp_pass[i] = '\0';
 
 					break;
                 
-            } else {
+		} else {
 
                 if (i < 15) {
 
@@ -445,15 +450,17 @@ int f_login(char *aux_username, int *ID) {
 
 
 
-		switch ( f_verify_login(temp_user, temp_pass, ID) ) {
+		switch ( f_verify_login(temp_user, temp_pass, user) ) {
 
 			case 1: 
 
 				v = 1;	break;
 
+
 			case 2: 
 
 				v = 2;	break;
+
 
 			default: 
 
@@ -465,10 +472,6 @@ int f_login(char *aux_username, int *ID) {
 
 	} while (v == 0);
 
-
-
-	strcpy(aux_username, temp_user);
-
 return (v);
 
 }
@@ -479,7 +482,7 @@ return (v);
 /*VALIDAR USUARIO*/
 //=================
 
-int f_verify_login(char *temp_user, char *temp_pass, int *ID) {
+int f_verify_login(char *temp_user, char *temp_pass, USER *user) {
 
 	FILE *filep;
 	USER aux;
@@ -489,8 +492,6 @@ int f_verify_login(char *temp_user, char *temp_pass, int *ID) {
 
 	filep = fopen("users.bin", "rb");
 
-	fseek(filep, 0, SEEK_SET);
-
 
 
 	if (filep == NULL) {
@@ -498,6 +499,8 @@ int f_verify_login(char *temp_user, char *temp_pass, int *ID) {
 		puts("Error al abrir el archivo");
 
 	} else {
+
+		fseek(filep, 0, SEEK_SET);
 
 		while ( fread(&aux, sizeof(USER), 1, filep) && !feof(filep) ) {
 
@@ -511,13 +514,16 @@ int f_verify_login(char *temp_user, char *temp_pass, int *ID) {
 
 							valid = 1;	
 
-							*ID = aux.id;
+							*user = aux;
 
 							break;
+
 
 						case 2: 
 
 							valid = 2;	
+
+							*user = aux;
 
 							break;
 					}
@@ -529,6 +535,7 @@ int f_verify_login(char *temp_user, char *temp_pass, int *ID) {
 		}
 
 	}
+
 
 
 	fclose(filep);
@@ -543,7 +550,7 @@ return (valid);
 /*MENU PARA USUARIO ESTANDAR*/
 //============================
 
-void f_standar_menu(char *aux_username) {
+void f_standar_menu(USER user) {
 
 	int op, v;
 
@@ -553,7 +560,7 @@ void f_standar_menu(char *aux_username) {
 
 		do {
 
-			printf("Que desea hacer, %s: \n\n", aux_username);
+			printf("Que desea hacer, %s: \n\n", user.username);
 
 			printf("1. Buscar proyectos\n2. Administrar tareas\n3. Reporte de tareas\n4. Grafica de Gantt\n0. Salir\n\nOpcion => ");
 
@@ -579,11 +586,13 @@ void f_standar_menu(char *aux_username) {
 
 				break;
 
+
 			case 2: 
 
 				puts("Tareas");
 
 				break;
+
 
 			case 3: 
 
@@ -591,11 +600,13 @@ void f_standar_menu(char *aux_username) {
 
 				break;
 
+
 			case 4: 
 
 				puts("Grafica");
 
 				break;
+
 
 			case 0: 
 
@@ -615,7 +626,7 @@ void f_standar_menu(char *aux_username) {
 /*MENU USUARIOS ADMINISTRADORES*/
 //===============================
 
-void f_admin_menu(char *aux_username, int ID) {
+void f_admin_menu(USER user) {
 
 	int op, v;
 
@@ -631,7 +642,7 @@ void f_admin_menu(char *aux_username, int ID) {
 
 		do {
 
-			printf("Que desea hacer, %s: \n\n", aux_username);
+			printf("Que desea hacer, %s: \n\n", user.username);
 
 			printf("1. Administrar usuarios\n2. Administrar proyectos\n3. Administrar tareas\n4. Grafica de Gantt\n0. Salir\n\nOpcion => ");
 
@@ -652,9 +663,10 @@ void f_admin_menu(char *aux_username, int ID) {
 
 			case 1: 
 
-				f_admin_users_manager_menu(aux_username, ID);
+				f_admin_users_manager_menu(user);
 
 				break;
+
 
 			case 2: 
 
@@ -662,17 +674,20 @@ void f_admin_menu(char *aux_username, int ID) {
 
 				break;
 
+
 			case 3: 
 
 				puts("Administrar tareas");
 
 				break;
 
+
 			case 4: 
 
 				puts("Grafica");
 
 				break;
+
 
 			case 0: 
 
@@ -961,7 +976,7 @@ void f_absolute_users_delete() {
 /*VALIDA EL ID DE USUARIOS ADMIN*/
 //==================================
 
-int f_verify_id(int temp_id) {
+int f_verify_id(int ID) {
 
 	FILE *filep;
 	USER aux;
@@ -987,7 +1002,7 @@ int f_verify_id(int temp_id) {
 
 		while ( fread(&aux, sizeof(USER), 1, filep) && !feof(filep) ) {
 
-			if ( temp_id == aux.id ) {
+			if ( ID == aux.id ) {
 
 				exist = 1; break;
 			}
@@ -1009,7 +1024,7 @@ return (exist);
 /*MENU PARA ADMINISTRACION DE USUARIOS*/
 //======================================
 
-void f_admin_users_manager_menu(char *aux_username, int ID) {
+void f_admin_users_manager_menu(USER user) {
 
 	int op, v;
 
@@ -1025,7 +1040,7 @@ void f_admin_users_manager_menu(char *aux_username, int ID) {
 
 		do {
 
-			printf("Que desea hacer %s: \n\n", aux_username);
+			printf("Que desea hacer %s: \n\n", user.username);
 
 			printf("1. Agregar Usuarios\n2. Mostrar Usuarios\n3. Borrar Usuarios\n4. Vaciar papaelera\n0. Volver al menu anterior\n\nOpcion => "); 
 
@@ -1049,27 +1064,31 @@ void f_admin_users_manager_menu(char *aux_username, int ID) {
 
 			case 1: 
 
-				f_add_users(ID);
+				f_add_users(user.id);
 
 				break;
+
 
 			case 2: 
 
-				f_show_users(ID); getchar();
+				f_show_users(user.id); getchar();
 
 				break;
+
 
 			case 3: 
 
-				f_relative_users_delete(ID);
+				f_relative_users_delete(user.id);
 
 				break;
+
 
 			case 4: 
 
 				f_absolute_users_delete();
 
 				break;
+
 
 			case 0: 
 

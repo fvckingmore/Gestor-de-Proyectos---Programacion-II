@@ -12,6 +12,8 @@ int main() {
 	char aux_username[15];	//MUESTRA EL NOMBRE DE USUARIO AL INGRESAR
 	int ID;	//GUARDA EL ID DEL ADMIN PARA ADMINISTRAR USUARIOS 
 
+	USER user;
+
 
 	
 	do {
@@ -39,17 +41,17 @@ int main() {
 
 			} else if ( op == 1 ) {
 
-				switch ( f_login(aux_username, &ID) ) {
+				switch ( f_login(&user) ) {
 
 					case 1: 
 
-						f_admin_menu(aux_username, ID);
+						f_admin_menu(user);
 
 						break;
 
 					case 2:
 
-						f_standar_menu(aux_username);
+						f_standar_menu(user);
 
 						break;
 
