@@ -74,7 +74,9 @@ int f_verify_id(int ID);
 /*MAIN*/	//TEMPORAL
 //======
 
-/*int main() {	//TEMPORAL
+/*int main() {	// TEMPORAL
+
+	
 
 	int op, v;	//TEMPORAL
 
