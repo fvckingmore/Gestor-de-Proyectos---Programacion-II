@@ -55,16 +55,16 @@ void scr() { system("clear"); }
 void scrw() { system("cls"); }
 
 
+void f_absolute_users_delete();
 void f_add_users(int ID);
 void f_show_users(int ID);
+void f_relative_users_delete(int ID);
 void f_standar_menu(USER user);
 void f_admin_menu(USER user);
-void f_relative_users_delete(int ID);
-void f_absolute_users_delete();
 void f_admin_users_manager_menu(USER user);
 
 int f_login(USER *user);
-int f_verify_login(char *temp_user, char *temp_pass, USER *user);
+int f_verify_login( char *temp_user, char *temp_pass, USER *user );
 int f_verify_username(char *temp_user);
 int f_verify_id(int ID);
 
@@ -74,7 +74,9 @@ int f_verify_id(int ID);
 /*MAIN*/	//TEMPORAL
 //======
 
-/*int main() {	//TEMPORAL
+/*int main() {	// TEMPORAL
+
+	
 
 	int op, v;	//TEMPORAL
 
@@ -190,6 +192,7 @@ void f_add_users(int ID) {
 				gets(aux.username);
 
 
+
 				if ( f_verify_username(aux.username) == 1 ) {
 
 					puts("El nombre de usuario ya existe, ingrese otro");
@@ -275,6 +278,7 @@ void f_add_users(int ID) {
 					v = scanf("%d", &op); buf();
 
 
+
 					if (!v || !(op >= 1 && op <= 2)) {
 
 						puts("Opcion incorrecta, intente de nuevo"); 
@@ -339,6 +343,7 @@ void f_show_users(int ID) {
 				printf("Contraseña: %s\n", aux.password);
 
 
+
 				switch(aux.level) {
 
 					case 2: 
@@ -359,6 +364,7 @@ void f_show_users(int ID) {
 						break;
 
 				}
+
 
 
 				puts("");
@@ -389,7 +395,7 @@ int f_login(USER *user) {
 
 	do {
 
-		//scr();
+		scr();
 
 		printf("USUARIO: ");	gets(temp_user); 
 
@@ -398,16 +404,21 @@ int f_login(USER *user) {
 		printf("CONTRASEÑA: ");	/*gets(temp_pass);*/
 
 
+		system("stty -echo");	//OCULTA ENTRADA DE DATOS EN LINUX
 
-		while (c = getch()) {	/*Oculta la contraseña y muestra "*" */
 
-            if (c == '\n') {
+
+		while (c = getchar()) {	/*Oculta la contraseña y muestra "*" */
+
+			if (c == '\n') {
 
 					temp_pass[i] = '\0';
 
+					system("stty echo");	//RESTAURA ENTRADA DE DATOS EN LINUX
+
 					break;
                 
-            } else {
+		} else {
 
                 if (i < 15) {
 
@@ -456,8 +467,8 @@ int f_login(USER *user) {
 			case 2: 
 
 				v = 2;	break;
-
 				
+
 			default: 
 
 				puts("Usuario o contraseña incorrecta, presione una tecla para continuar...");
@@ -735,6 +746,8 @@ void f_relative_users_delete(int ID) {
 			printf("Ingrese el usuario que desea eliminar: "); 
 
 			gets(temp_user); del = 0;
+
+			puts("");
 
 
 
