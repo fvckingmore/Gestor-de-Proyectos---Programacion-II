@@ -64,7 +64,7 @@ void f_admin_menu(USER user);
 void f_admin_users_manager_menu(USER user);
 
 int f_login(USER *user);
-int f_verify_login(char *temp_user, char *temp_pass, USER *user);
+int f_verify_login( char *temp_user, char *temp_pass, USER *user );
 int f_verify_username(char *temp_user);
 int f_verify_id(int ID);
 
@@ -402,12 +402,16 @@ int f_login(USER *user) {
 		printf("CONTRASEÑA: ");	/*gets(temp_pass);*/
 
 
+		system("stty -echo");	//OCULTA ENTRADA DE DATOS EN LINUX
 
-		while (c = getch()) {	/*Oculta la contraseña y muestra "*" */
+
+		while (c = getchar()) {	/*Oculta la contraseña y muestra "*" */
 
 			if (c == '\n') {
 
 					temp_pass[i] = '\0';
+
+					system("stty echo");	//RESTAURA ENTRADA DE DATOS EN LINUX
 
 					break;
                 
