@@ -55,6 +55,7 @@ void scr() { system("clear"); }
 void scrw() { system("cls"); }
 
 
+void f_show_all_users();
 void f_absolute_users_delete();
 void f_add_users(int ID);
 void f_show_users(int ID);
@@ -1107,5 +1108,73 @@ void f_admin_users_manager_menu(USER user) {
 		}
 
 	} while ( op != 0 );
+
+}
+
+
+
+//============================
+/*MUESTRA TODOS LOS USUARIOS*/
+//============================
+
+void f_show_all_users() {
+
+	FILE *filep;
+	USER aux;
+	filep = fopen("users.bin", "rb");
+
+
+
+	if (filep == NULL) {
+
+		puts("Error al abrir el archivo"); 
+
+		getchar(); 
+
+		scr();
+
+		//scrw();
+
+	} else {
+
+		while ( fread(&aux, sizeof(USER), 1, filep) && !feof(filep) ){
+
+			printf("Usuario: %s\n", aux.username);
+
+			printf("Contraseña: %s\n", aux.password);
+
+
+
+			switch(aux.level) {
+
+				case 2: 
+
+					puts("Nivel: Normal"); 
+
+					printf("ID: %d\n", aux.id);	//TEMPORAL
+
+					break;
+
+
+				case 1: 
+
+					puts("Nivel: Administrador"); 
+
+					printf("ID: %d\n", aux.id);
+
+					break;
+
+			}
+
+
+
+			puts("");
+
+		}
+
+	}
+
+
+	fclose(filep);
 
 }
