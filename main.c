@@ -13,13 +13,13 @@ int main() {
 
 
 	
-	do {
+	while (1) {
 
 		scr();
 
 
 
-		do {
+		while (1) {
 
 			scr();
 
@@ -33,7 +33,7 @@ int main() {
 
 
 
-			if ( v || (op == 0) || (op == 1) || (op == 1234) ) {
+			if (v) {
 
 				if ( op == 1 ) {
 
@@ -86,9 +86,23 @@ int main() {
 				scr(); puts("Error, opcion incorrecta"); getchar();
 			}
 
-		} while ( v || (op == 1) || (op == 1234) );
+		}
 
-		/*do {
+		
+
+		if (op == 0) {
+
+			break;
+		}
+
+	} 
+
+	
+
+
+	if (1 == 0){	//DESACTIVADO
+
+		do {
 
 			puts("BIENVENIDO");
 
@@ -124,9 +138,11 @@ int main() {
 
 			}
 
-		} while ( !v || !( op >= 0 && op <= 1 ) );*/
+		} while ( !v || !( op >= 0 && op <= 1 ) );
 
-	} while (op != 0);
+	}				//DESACTIVADO
+
+	
 
 return 0;
 
