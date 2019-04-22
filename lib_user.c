@@ -174,6 +174,7 @@ void f_add_users(int ID) {
 
 		//scrw();
 
+
 	} else {
 
 		do {
@@ -229,6 +230,7 @@ void f_add_users(int ID) {
 
 					//scrw();
 
+
 				} else {
 
 					if ( aux.level == 1 ) {
@@ -238,6 +240,7 @@ void f_add_users(int ID) {
 							aux.id = rand() % (20 - 1 + 1) + 1;
 
 						} while ( f_verify_id(aux.id) == 1 );
+
 
 					} else if ( aux.level == 2 ) {
 
@@ -294,6 +297,7 @@ void f_add_users(int ID) {
 
 				} while (!v || !(op >= 1 && op <= 2));
 
+
 			} else {
 
 				puts("Error al agregar el usuario");
@@ -332,6 +336,7 @@ void f_show_users(int ID) {
 		scr();
 
 		//scrw();
+
 
 	} else {
 
@@ -398,42 +403,86 @@ int f_login(USER *user) {
 
 		scr();
 
-		printf("USUARIO: ");	gets(temp_user); 
+		printf("USUARIO: ");
+
+		gets(temp_user); 
 
 		i = 0;
 
-		printf("CONTRASEÑA: ");	/*gets(temp_pass);*/
 
 
-		system("stty -echo");	//OCULTA ENTRADA DE DATOS EN LINUX
+		if (1 == 1) {		//SISTEMA DE CONTRASEÑA PARA LINUX
+
+			printf("CONTRASEÑA: ");	/*gets(temp_pass);*/
+
+			system("stty -echo");	//OCULTA ENTRADA DE DATOS EN LINUX
 
 
 
-		while (c = getchar()) {	/*Oculta la contraseña y muestra "*" */
+			while (c = getchar()) {	/*Oculta la contraseña y muestra "*" */
 
-			if (c == '\n') {
+				if (c == '\n') {
 
-					temp_pass[i] = '\0';
+						temp_pass[i] = '\0';
 
-					system("stty echo");	//RESTAURA ENTRADA DE DATOS EN LINUX
+						system("stty echo");	//RESTAURA ENTRADA DE DATOS EN LINUX
 
-					break;
-                
-		} else {
+						break;
 
-                if (i < 15) {
+	                
+				} else if (i < 15) {
 
-                    printf("*");
+	                    printf("*");
 
-                    temp_pass[i] = c;
+	                    temp_pass[i] = c;
 
-                    i++;
+	                    i++;
 
-                }
+				}
 
-            }
+	     	}
 
-     	}
+	    }
+
+
+
+	    if (1 == 0) {		//SISTEMA DE CONTRASEÑA PARA WINDOWS
+
+			printf("CONTRASEÑA: ");	/*gets(temp_pass);*/
+
+
+
+			while (c = getch()) {	/*Oculta la contraseña y muestra "*" */
+
+				if (c == 13) {
+
+						temp_pass[i] = '\0';
+
+						break;
+
+
+				} else if (c == 8 && i > 0) {
+
+						putchar(8);
+
+						putchar(' ');
+
+						putchar(8);
+
+
+				} else if (i < 15 && c != 8) {
+
+	                    printf("*");
+
+	                    temp_pass[i] = c;
+
+	                    i++;
+
+				}
+
+	     	}
+
+	    }
 
 
 
@@ -505,6 +554,7 @@ int f_verify_login(char *temp_user, char *temp_pass, USER *user) {
 	if (filep == NULL) {
 
 		puts("Error al abrir el archivo");
+
 
 	} else {
 
@@ -732,6 +782,7 @@ void f_relative_users_delete(int ID) {
 
 		puts("Error al abrir el archivo");
 
+
 	} else {
 
 		do {
@@ -800,6 +851,7 @@ void f_relative_users_delete(int ID) {
 
 					//scrw();
 
+
 				} else {
 
 					scr();	
@@ -860,6 +912,7 @@ int f_verify_username(char *temp_user) {
 
 		puts("Error al abrir el archivo");
 
+
 	} else {
 
 		exist = 0;
@@ -908,6 +961,7 @@ void f_absolute_users_delete() {
 	if ( filep == NULL || filep_aux == NULL) {
 
 		puts("Error al abrir el archivo");
+
 
 	} else {
 
@@ -1003,6 +1057,7 @@ int f_verify_id(int ID) {
 	if (filep == NULL) {
 
 		puts("Error al abrir el archivo");
+
 
 	} else {
 
@@ -1134,6 +1189,7 @@ void f_show_all_users() {
 		scr();
 
 		//scrw();
+
 
 	} else {
 
