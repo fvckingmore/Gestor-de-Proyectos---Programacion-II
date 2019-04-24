@@ -5,7 +5,7 @@
 #include "lib_user.c"
 
 
-int main() {	
+int main(void) {	
 
 	int op, v;	
 

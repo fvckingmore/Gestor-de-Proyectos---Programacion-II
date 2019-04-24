@@ -1,14 +1,18 @@
 /*
 
-PARA COMPILAR EN WINDOWS SI ERRORES HACER LO SIGUIENTE:
+PARA COMPILAR EN WINDOWS SIN ERRORES HACER LO SIGUIENTE:
 
 1. COMENTAR LAS LLAMADAS DE LA FUNCION " scr(); " 
 Y DESCOMENTAR LAS LLAMADAS A LA FUNCION " scrw(); "
 
 2. COMENTAR " conio.c " Y DESCOMENTAR " conio.h "
 
-3. EN LA LINEA 403, EN LA FUNCION " f_login() "
-CAMBIAR " if (c == '\n') " POR " if (c == 13) "
+3. EN LA FUNCION " f_login " ACTIVAR EL BLOQUE DE CODIGO 
+PARA CONTRASEÑA DE WINDOWS Y DESCATIVAR EL BLOQUE DE 
+CODIGO PARA CONTRASEA DE LINUX. EL BLOQUE DE CODIGO DE ACTIVA 
+Y DESACTIVA CAMBIANDO " (1 == 0) " POR " (1 == 1) "
+
+4. PARA ENTRAR EN MODO DEBUG, AL INGRESAR LA OPCION TECLEAR " 1234 "
 
 */
 
@@ -35,7 +39,7 @@ CAMBIAR " if (c == '\n') " POR " if (c == 13) "
 typedef struct {
 
 	char username[15], password[15];
-	int level, del, id;
+	int level, del, id, admin_id;
 
 } USER;
 
@@ -46,17 +50,17 @@ typedef struct {
 //============
 
 //LIMPIA BUFFER
-void buf() { int c; while ( (c = fgetc(stdin)) != EOF && c != '\n' ) {} }
+void buf(void) { int c; while ( (c = fgetc(stdin)) != EOF && c != '\n' ) {} }
 
 //LIMPIA PANTALLA LINUX
-void scr() { system("clear"); }
+void scr(void) { system("clear"); }
 
 //LIMPIA PANTALLA WINDOWS
-void scrw() { system("cls"); }
+void scrw(void) { system("cls"); }
 
 
-void f_show_all_users();
-void f_absolute_users_delete();
+void f_show_all_users(void);
+void f_absolute_users_delete(void);
 void f_add_users(int ID);
 void f_show_users(int ID);
 void f_relative_users_delete(int ID);
@@ -68,6 +72,7 @@ int f_login(USER *user);
 int f_verify_login( char *temp_user, char *temp_pass, USER *user );
 int f_verify_username(char *temp_user);
 int f_verify_id(int ID);
+int f_verify_admin_id(int ID);
 
 
 
@@ -237,14 +242,24 @@ void f_add_users(int ID) {
 
 						do {
 
-							aux.id = rand() % (20 - 1 + 1) + 1;
+							aux.admin_id = rand() % (80 - 1 + 1) + 1;
 
-						} while ( f_verify_id(aux.id) == 1 );
+							aux.id = aux.admin_id;
+
+						} while ( f_verify_admin_id(aux.admin_id) == 1 );
 
 
 					} else if ( aux.level == 2 ) {
 
-						aux.id = ID;
+						aux.admin_id = ID;
+
+
+
+						do {
+
+							aux.id = rand() % (500 - 100 + 1) + 100;
+
+						} while ( f_verify_id(aux.id) == 1 );
 
 					}
 
@@ -342,7 +357,7 @@ void f_show_users(int ID) {
 
 		while ( fread(&aux, sizeof(USER), 1, filep) && !feof(filep) ){
 
-			if ( !aux.del && aux.id == ID ) {
+			if ( !aux.del && aux.admin_id == ID ) {
 
 				printf("Usuario: %s\n", aux.username);
 
@@ -356,6 +371,8 @@ void f_show_users(int ID) {
 
 						puts("Nivel: Normal"); 
 
+						printf("ADMIN ID: %d\n", aux.admin_id);	//TEMPORAL
+
 						printf("ID: %d\n", aux.id);	//TEMPORAL
 
 						break;
@@ -365,7 +382,9 @@ void f_show_users(int ID) {
 
 						puts("Nivel: Administrador"); 
 
-						printf("ID: %d\n", aux.id);
+						printf("ADMIN ID: %d\n", aux.admin_id);	//TEMPORAL
+
+						printf("ID: %d\n", aux.id);	//TEMPORAL
 
 						break;
 
@@ -943,7 +962,7 @@ return (exist);
 /*ELIMINA PERMANENTEMENTE LOS USUARIOS DEL DISCO*/
 //================================================
 
-void f_absolute_users_delete() {
+void f_absolute_users_delete(void) {
 
 	FILE *filep;
 	FILE *filep_aux;
@@ -1039,6 +1058,55 @@ void f_absolute_users_delete() {
 //==================================
 /*VALIDA EL ID DE USUARIOS ADMIN*/
 //==================================
+
+int f_verify_admin_id(int ID) {
+
+	FILE *filep;
+	USER aux;
+	int exist;
+
+
+
+	filep = fopen("users.bin", "rb");
+
+	fseek(filep, 0, SEEK_SET);
+
+
+
+	if (filep == NULL) {
+
+		puts("Error al abrir el archivo");
+
+
+	} else {
+
+		exist = 0;
+
+
+
+		while ( fread(&aux, sizeof(USER), 1, filep) && !feof(filep) ) {
+
+			if ( ID == aux.admin_id ) {
+
+				exist = 1; break;
+			}
+
+		}
+
+	}
+
+
+	fclose(filep);
+
+return (exist);
+
+}
+
+
+
+//==========================
+/*VALIDA EL ID DE USUARIOS*/
+//==========================
 
 int f_verify_id(int ID) {
 
@@ -1172,7 +1240,7 @@ void f_admin_users_manager_menu(USER user) {
 /*MUESTRA TODOS LOS USUARIOS*/
 //============================
 
-void f_show_all_users() {
+void f_show_all_users(void) {
 
 	FILE *filep;
 	USER aux;
@@ -1207,6 +1275,8 @@ void f_show_all_users() {
 
 					puts("Nivel: Normal"); 
 
+					printf("ADMIN ID: %d\n", aux.admin_id);	//TEMPORAL
+
 					printf("ID: %d\n", aux.id);	//TEMPORAL
 
 					break;
@@ -1216,7 +1286,9 @@ void f_show_all_users() {
 
 					puts("Nivel: Administrador"); 
 
-					printf("ID: %d\n", aux.id);
+					printf("ADMIN ID: %d\n", aux.admin_id);	//TEMPORAL
+
+					printf("ID: %d\n", aux.id);	//TEMPORAL
 
 					break;
 
