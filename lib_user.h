@@ -51,7 +51,8 @@ void f_absolute_users_delete(void);	//BORRA FISICAMENTE LOS USUARIOS
 void f_add_users(int ID);			//AGREGA USUARIOS A LA BASE DE DATOS
 void f_show_users(int ID);			//MUESTRA LOS USUARIOS
 void f_relative_users_delete(int ID);//BORRA VIRTUALMENTE LOS USUARIOS
-void f_edit_users(int ID, int aux_level);//EDITA LOS USUARIOS
+void f_admin_edit(int ID, int aux_level);//EDICION DE USUARIOS PARA ADMINISTRADORES
+void f_standar_edit(int ID, char *aux_username);//EDICION DE USUARIO ESTANDAR
 int f_verify_id(int ID);			//VERIFICA EL IEDNTIFICADOR DE USUARIO
 int f_verify_admin_id(int ID);		//VERIFICA EL IDENTIFICADOR DE ADMINISTRADOR DE USUARIO
 void f_standar_menu(USER user);		//MENU PARA USUARIO ESTANDAR
@@ -649,6 +650,10 @@ void f_standar_menu(USER user) {
 
 		do {
 
+			printf(	"==================\n"
+					"= MENU PRINCIPAL =\n"
+					"==================\n\n");
+
 			printf("Que desea hacer, %s: \n\n", user.username);
 
 			printf(	"1. Buscar proyectos\n"
@@ -705,7 +710,7 @@ void f_standar_menu(USER user) {
 
 			case 5: 
 
-				f_edit_users(user.id, user.level);
+				f_standar_edit(user.id, user.username);
 
 				break;
 
@@ -741,6 +746,10 @@ void f_admin_menu(USER user) {
 
 
 		do {
+
+			printf(	"==================\n"
+					"= MENU PRINCIPAL =\n"
+					"==================\n\n");
 
 			printf("Que desea hacer, %s: \n\n", user.username);
 
@@ -1236,6 +1245,10 @@ void f_admin_users_manager_menu(USER user) {
 
 		do {
 
+			printf(	"==============================\n"
+					"= ADMINISTRACION DE USUARIOS =\n"
+					"==============================\n\n");
+
 			printf("Que desea hacer %s: \n\n", user.username);
 
 			printf(	"1. Agregar Usuarios\n"
@@ -1294,7 +1307,7 @@ void f_admin_users_manager_menu(USER user) {
 
 			case 5: 
 
-				f_edit_users(user.id, user.level);
+				f_admin_edit(user.id, user.level);
 
 				break;
 
@@ -1383,11 +1396,11 @@ void f_show_all_users(void) {
 
 
 
-//====================
-/*EDITA LOS USUARIOS*/
-//====================
+//==========================================
+/*EDICION DE USUARIOS PARA ADMINISTRADORES*/
+//==========================================
 
-void f_edit_users(int ID, int aux_level) {
+void f_admin_edit(int ID, int aux_level) {
 
 	FILE *filep;
 	USER aux;
@@ -1882,6 +1895,328 @@ void f_edit_users(int ID, int aux_level) {
 				break;
 
 			}
+
+
+		} else {
+
+			puts("El usuario no existe");
+		}
+
+	}
+
+
+	fclose(filep);
+
+}
+
+
+
+//==============================
+/*EDICION DE USUSARIO ESTANDAR*/
+//==============================
+
+void f_standar_edit(int ID, char *aux_username) {
+
+	FILE *filep;
+	USER aux;
+	int exist, op, v;
+
+
+
+	filep = fopen("users.bin", "rb+");
+
+	srand(time(NULL));
+
+	scr();
+
+
+
+	while (1) {
+
+		fseek(filep, 0, SEEK_SET);	/*<-- MUEVE EL CURSOR HACIA EL PRINCIPIO DEL ARCHIVO*/
+
+		exist = 0;
+
+		
+
+		/*BUSCA EN EL ARCHIVO, PARA VER SI EXISTE EL USUARIO QUE HA INGREASADO*/
+
+		while ( fread( &aux, sizeof(USER), 1, filep ) && !feof(filep) ) {
+
+			if ( strcmp(aux_username, aux.username) == 0 ) {
+
+				exist = 1;
+
+				break;
+
+			}
+
+		}
+
+
+
+		/*SI EL USUARIO INGRESADO EXISTE*/
+
+		if (exist) {
+
+			scr();
+
+			puts("DATOS DEL USUARIO\n");
+
+			printf("Nombre: %s\n", aux.username);
+
+			printf("Contraseña: %s\n", aux.password);
+
+			printf("Tipo de usuario: ");
+
+			
+
+			switch (aux.level) {
+
+				case 1:
+
+					puts("Administrador\n");
+
+					break;
+
+
+				case 2:
+
+					puts("Estandar\n");
+
+					break;
+
+			}
+
+
+
+			puts("Elija los datos a modificar:\n");
+
+
+
+			/*EDITAR EL NOMBRE DE USUARIO*/
+
+			printf("Nombre actual: %s\n\n", aux.username);
+
+			
+
+			while (1) {
+
+				printf(	"Desea modificar el nombre?\n\n"
+						"1. Si\n"
+						"2. No\n\n"
+						"Opcion => ");
+
+				v = scanf("%d", &op); buf();
+
+				
+
+				if (v) {
+
+					if (op >= 1 && op <= 2) {
+
+						if (op == 1) {
+
+							scr();
+
+							printf("Ingrese nombre nuevo: ");
+
+							gets(aux.username);
+
+							break;
+
+
+						} else if (op == 2) {
+
+							break;
+
+						}
+
+
+					} else {
+
+						puts("Error, opcion incorrecta");
+
+					}
+
+
+				} else {
+
+					puts("Error, opcion incorrecta");
+				}
+
+			}
+
+
+
+			scr();
+
+
+
+			/*EDITAR CONTRASEÑA*/
+
+			printf("Contraseña actual: %s\n\n", aux.password);
+
+			
+
+			while (1) {
+
+				printf(	"Desea modificar la contraseña?\n\n"
+						"1. Si\n"
+						"2. No\n\n"
+						"Opcion => ");
+
+				v = scanf("%d", &op); buf();
+
+				
+
+				if (v) {
+
+					if (op >= 1 && op <= 2) {
+
+						if (op == 1) {
+
+							scr();
+
+							printf("Ingrese contraseña nueva: ");
+
+							gets(aux.password);
+
+							break;
+
+
+						} else if (op == 2) {
+
+							break;
+
+						}
+
+
+					} else {
+
+						puts("Error, opcion incorrecta");
+
+					}	
+
+
+				} else {
+
+					puts("Error, opcion incorrecta");
+				}
+
+			}
+
+
+
+			scr();
+
+
+
+			/*CONFIRMAR EDICION DE USUSARIO*/
+
+			while (1) {
+
+				printf(	"Esta seguro que desea modificar el usuario:\n\n"
+						"1. Si\n"
+						"2. No\n\n"
+						"Opcion => ");
+
+				v = scanf("%d", &op); buf();
+
+
+
+				if (v) {
+
+					if (op >= 1 && op <= 2) {
+
+						if (op == 1) {
+
+							fseek(filep, ftell(filep) - sizeof(USER), SEEK_SET);
+
+
+
+							if ( fwrite(&aux, sizeof(USER), 1, filep) ) {
+
+								scr();
+
+								puts("Espere...\n");
+
+								#ifdef __linux__
+
+									system("sleep 1"); 
+
+								#elif _WIN32
+
+									Sleep(1000);
+
+								#endif	
+
+								puts("Usuario editado correctamente");
+
+								#ifdef __linux__
+
+									system("sleep 0.5"); 
+
+								#elif _WIN32
+
+									Sleep(500);
+
+								#endif
+
+								scr();
+
+
+							} else {
+
+								puts("Error, no se pudo editar el usuario");
+
+							}
+
+
+
+							break;
+
+
+						} else if (op == 2) {
+
+							scr();
+
+							puts("Edicion cancelada");
+
+							#ifdef __linux__
+
+								system("sleep 1"); 
+
+							#elif _WIN32
+
+								Sleep(1000);
+
+							#endif
+
+							scr();
+
+							break;
+
+						}
+
+
+					} else {
+
+						puts("Error, opcion incorrecta");
+
+					}
+
+
+				} else {
+
+					puts("Error, opcion incorrecta");
+				}
+
+			}
+
+
+
+			break;
 
 
 		} else {
