@@ -3,6 +3,17 @@
 
 
 
+#ifdef __linux__
+
+	#include <unistd.h>
+
+#elif _WIN32
+
+	#include <windows.h>
+
+#endif
+
+
 //LIMPIA EL BUFFER
 void buf(void) { 
 
@@ -32,6 +43,22 @@ void scr(void) {
 		system("cls");
 
 	#endif
+}
+
+//DETIENE EL PROGRAMA POR UN TIEMPO
+void wait(int n) {		// <-- wait(TIEMPO A ESPERAR EN SEGUNDOS)
+
+	#ifdef __linux__
+
+		sleep(n);
+
+	#elif _WIN32
+
+		n = n * 1000;
+		Sleep(n);
+
+	#endif
+
 }
 
 
