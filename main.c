@@ -22,11 +22,42 @@ int main(void) {
 		while (1) {
 
 			scr();
+			
+			/*printf(	"      .       ......      ..     ........     ....      ...\n"
+					" .lxdooodk,  xXoooooc  lkdoodxd :oooXNdool .xOdccdOd.  cWdooxO,\n"
+					".Xx       .  xO       ,Mc           O0     Kd      k0  cN.   kO\n"
+					"lN.   .''..  xNxxxxxl  l00kdl;.     O0    ,M,      ;M. cW:;;o0'\n"
+					":W,   :ccNo  xO           ..,dN'    O0    .W:      lN. cW:,lXc\n"
+					" oXo'. .'Xo  x0...... 'l,....oX.    O0     :Ko'..'dK;  cN.  .x0;\n"
+					"   ,coooc,   'cccccc;  ,clooc,      ,;       ,cooc,    .:     'c.\n\n"
 
-			printf(	"BIENVENIDO\n\n"
-					"1. Ingresar\n"
-					"0. Salir\n\n"
-					"Opcion => ");
+					".XOxxxkd'   .XOxxxxx'\n"
+					".M;    ,0x  .M,      \n"
+					".M;     'Mc .Mkooooo.\n"
+					".M;     ,M: .M,      \n"
+					".M;   .:0l  .M,      \n"
+					".kdoooo:.   .kdooooo.\n\n"
+
+
+					".ooool;   cooooc.     'loooo;   ;c     ;c  coooooo;   .;lool;.:ooooooool  .cooooc.    .coooc;.\n"
+					".Mo...xX. 00...:N:   xK;   .dX. .Ok   o0.  Kk.....   dKc....c: ...kX.... cXc.  .cX;  oK,...,l,\n"
+					".Ml   ;W' 0O   .Nc  :W.      kO   xO'kk    K0,,,,,. oW'           xK    .W:      lN. xK,..    \n"
+					".M0oodx,  0Xod0K,   lN       dK    oMd     K0;,,,,. OX            xK    ,M,      ;M.  'coxxOx'\n"
+					".Ml       0O  .OO.  .Wc     .Xo    ,M:     Kx       cMc           xK     Kx      OO         K0\n"
+					".Ml       0O    :Ko. 'kkoclxOc     ,M:     KXooooo;  ;kklccox:    xK     .xOdccdOd.  dkocclxO'\n"
+					"                        ....                            ....                ....       ....   \n");*/
+
+			printf(	"=======================\n"
+					"=      BIENVENIDO     =\n"
+					"=                     =\n"
+					"=          AL         =\n"
+					"=                     =\n"
+					"= GESTOR DE PROYECTOS =\n"
+					"=======================\n\n"
+
+					"[1] Ingresar\n"
+					"[0] Salir\n\n"
+					"Opcion => [ ]\b\b");
 
 			v = scanf("%d", &op);	buf();
 
@@ -58,15 +89,7 @@ int main(void) {
 
 					puts("Entrando a modo debbug");
 
-					#ifdef __linux__
-
-						system("sleep 1.5");
-
-					#elif _WIN32
-
-						Sleep(1500);
-
-					#endif
+					wait(1.5);
 
 					scr();
 
@@ -76,7 +99,11 @@ int main(void) {
 
 				} else if (op == 0) {
 
-					scr(); puts("Hasta luego"); break;
+					scr(); 
+
+					//puts("Hasta luego"); 
+
+					break;
 
 				} else {
 

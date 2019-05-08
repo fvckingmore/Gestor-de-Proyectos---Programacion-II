@@ -53,12 +53,12 @@ void f_show_users(int ID);			//MUESTRA LOS USUARIOS
 void f_relative_users_delete(int ID);//BORRA VIRTUALMENTE LOS USUARIOS
 void f_admin_edit(int ID, int aux_level);//EDICION DE USUARIOS PARA ADMINISTRADORES
 void f_standar_edit(int ID, char *aux_username);//EDICION DE USUARIO ESTANDAR
-int f_verify_id(int ID);			//VERIFICA EL IEDNTIFICADOR DE USUARIO
-int f_verify_admin_id(int ID);		//VERIFICA EL IDENTIFICADOR DE ADMINISTRADOR DE USUARIO
 void f_standar_menu(USER user);		//MENU PARA USUARIO ESTANDAR
 void f_admin_menu(USER user);		//MENU PARA ADMINISTRADOR
 void f_admin_users_manager_menu(USER user);//MENU DE GESTION DE USUARIO PARA ADMINISTRADORES
 
+int f_verify_id(int ID);			//VERIFICA EL IEDNTIFICADOR DE USUARIO
+int f_verify_admin_id(int ID);		//VERIFICA EL IDENTIFICADOR DE ADMINISTRADOR DE USUARIO
 int f_login(USER *user);			//SISTEMA DE INGRESO PARA USUARIOS
 int f_verify_login( char *temp_user, char *temp_pass, USER *user );//VERIFICA EL INGRESO
 int f_verify_username(char *temp_user);//VERIFICA SI EXISTE EL NOMRE DE USUARIO
@@ -203,9 +203,9 @@ void f_add_users(int ID) {
 
 
 				printf(	"Nivel del Usuario\n\n"
-						"1. Administrador\n"
-						"2. Normal\n\n"
-						"=> ");
+						"[1] Administrador\n"
+						"[2] Normal\n\n"
+						"=> [ ]\b\b");
 				
 				v = scanf("%d", &aux.level); buf();
 
@@ -263,29 +263,13 @@ void f_add_users(int ID) {
 
 				puts("Espere..."); 
 
-				#ifdef __linux__
-
-					system("sleep 1"); 
-
-				#elif _WIN32
-
-					Sleep(1000);
-
-				#endif
+				wait(1);
 				
 				puts("Usuario agregado correctamente"); 
 				
 				/*getchar();*/ 
 
-				#ifdef __linux__
-
-					system("sleep 0.75"); 
-
-				#elif _WIN32
-
-					Sleep(750);
-
-				#endif
+				wait(0.75);
 
 
 
@@ -294,9 +278,9 @@ void f_add_users(int ID) {
 					scr();
 
 					printf(	"Desea agregar otro usuario?\n\n"
-							"1. Si\n"
-							"2. No\n\n"
-							"Opcion => "); 
+							"[1] Si\n"
+							"[2] No\n\n"
+							"Opcion => [ ]\b\b"); 
 					
 					v = scanf("%d", &op); buf();
 
@@ -341,6 +325,16 @@ void f_show_users(int ID) {
 	FILE *filep;
 	USER aux;
 	filep = fopen("users.bin", "rb");
+
+
+
+	scr();
+
+	puts("Espere...");
+
+	wait(1.5);
+
+	scr();
 
 
 
@@ -508,15 +502,7 @@ int f_login(USER *user) {
 
         puts("Espere...\n");
 
-        #ifdef __linux__
-
-			system("sleep 1"); 
-
-		#elif _WIN32
-
-			Sleep(1000);
-
-		#endif
+        wait(1);
 
 
 
@@ -656,13 +642,13 @@ void f_standar_menu(USER user) {
 
 			printf("Que desea hacer, %s: \n\n", user.username);
 
-			printf(	"1. Buscar proyectos\n"
-					"2. Administrar tareas\n"
-					"3. Reporte de tareas\n"
-					"4. Grafica de Gantt\n"
-					"5. Editar Usuario\n"
-					"0. Salir\n\n"
-					"Opcion => ");
+			printf(	"[1] Buscar proyectos\n"
+					"[2] Administrar tareas\n"
+					"[3] Reporte de tareas\n"
+					"[4] Grafica de Gantt\n"
+					"[5] Editar Usuario\n"
+					"[0] Salir\n\n"
+					"Opcion => [ ]\b\b");
 
 			v = scanf("%d", &op); buf();
 
@@ -753,12 +739,12 @@ void f_admin_menu(USER user) {
 
 			printf("Que desea hacer, %s: \n\n", user.username);
 
-			printf(	"1. Administrar usuarios\n"
-					"2. Administrar proyectos\n"
-					"3. Administrar tareas\n"
-					"4. Grafica de Gantt\n"
-					"0. Salir\n\n"
-					"Opcion => ");
+			printf(	"[1] Administrar usuarios\n"
+					"[2] Administrar proyectos\n"
+					"[3] Administrar tareas\n"
+					"[4] Grafica de Gantt\n"
+					"[0] Salir\n\n"
+					"Opcion => [ ]\b\b");
 
 			v = scanf("%d", &op);	buf();
 
@@ -861,9 +847,9 @@ void f_relative_users_delete(int ID) {
 
 				printf("Esta seguro que desea eliminar a %s?\n\n", temp_user);
 
-				printf(	"1. Si\n"
-						"2. No\n\n"
-						"Opcion => ");
+				printf(	"[1] Si\n"
+						"[2] No\n\n"
+						"Opcion => [ ]\b\b");
 
 				v = scanf("%d", &op); buf();
 
@@ -901,27 +887,11 @@ void f_relative_users_delete(int ID) {
 
 					puts("Espere...");	
 
-					#ifdef __linux__
-
-						system("sleep 1"); 
-
-					#elif _WIN32
-
-						Sleep(1000);
-
-					#endif 
+					wait(1);
 
 					puts("Usuario eliminado");	
 
-					#ifdef __linux__
-
-						system("sleep 0.75"); 
-
-					#elif _WIN32
-
-						Sleep(750);
-
-					#endif	
+					wait(0.75);
 
 					scr();
 
@@ -939,9 +909,9 @@ void f_relative_users_delete(int ID) {
 				do {
 
 					printf(	"Desea eliminar otro usuario?\n\n"
-							"1. Si\n"
-							"2. No\n\n"
-							"Opcion => ");
+							"[1] Si\n"
+							"[2] No\n\n"
+							"Opcion => [ ]\b\b");
 
 					v = scanf("%d", &op);	buf();
 
@@ -1046,9 +1016,9 @@ void f_absolute_users_delete(void) {
 
 			printf("Desea borrar permanentemente los usuarios?\n\n");
 
-			printf(	"1. Si\n"
-					"2. No\n\n"
-					"Opcion => "); 
+			printf(	"[1] Si\n"
+					"[2] No\n\n"
+					"Opcion => [ ]\b\b"); 
 
 			v = scanf("%d", &op);	buf();
 
@@ -1090,27 +1060,11 @@ void f_absolute_users_delete(void) {
 
 			puts("Espere...");	
 
-			#ifdef __linux__
-
-				system("sleep 1"); 
-
-			#elif _WIN32
-
-				Sleep(1000);
-
-			#endif
+			wait(1);
 
 			puts("Usuarios eliminados correctamente");	
 
-			#ifdef __linux__
-
-				system("sleep 0.75"); 
-
-			#elif _WIN32
-
-				Sleep(750);
-
-			#endif
+			wait(0.75);
 
 		}
 
@@ -1251,13 +1205,13 @@ void f_admin_users_manager_menu(USER user) {
 
 			printf("Que desea hacer %s: \n\n", user.username);
 
-			printf(	"1. Agregar Usuarios\n"
-					"2. Mostrar Usuarios\n"
-					"3. Borrar Usuarios\n"
-					"4. Vaciar papaelera\n"
-					"5. Editar Usuarios\n"
-					"0. Volver al menu anterior\n\n"
-					"Opcion => "); 
+			printf(	"[1] Agregar Usuarios\n"
+					"[2] Mostrar Usuarios\n"
+					"[3] Borrar Usuarios\n"
+					"[4] Vaciar papaelera\n"
+					"[5] Editar Usuarios\n"
+					"[0] Volver al menu anterior\n\n"
+					"Opcion => [ ]\b\b"); 
 
 			v = scanf("%d", &op);	buf();
 
@@ -1495,9 +1449,9 @@ void f_admin_edit(int ID, int aux_level) {
 			while (1) {
 
 				printf(	"Desea modificar el nombre?\n\n"
-						"1. Si\n"
-						"2. No\n\n"
-						"Opcion => ");
+						"[1] Si\n"
+						"[2] No\n\n"
+						"Opcion => [ ]\b\b");
 
 				v = scanf("%d", &op); buf();
 
@@ -1554,9 +1508,9 @@ void f_admin_edit(int ID, int aux_level) {
 			while (1) {
 
 				printf(	"Desea modificar la contraseña?\n\n"
-						"1. Si\n"
-						"2. No\n\n"
-						"Opcion => ");
+						"[1] Si\n"
+						"[2] No\n\n"
+						"Opcion => [ ]\b\b");
 
 				v = scanf("%d", &op); buf();
 
@@ -1634,9 +1588,9 @@ void f_admin_edit(int ID, int aux_level) {
 				while (1) {
 
 					printf(	"Desea modificar el tipo de usuario?\n\n"
-							"1. Si\n"
-							"2. No\n\n"
-							"Opcion => ");
+							"[1] Si\n"
+							"[2] No\n\n"
+							"Opcion => [ ]\b\b");
 
 					v = scanf("%d", &op); buf();
 
@@ -1655,9 +1609,9 @@ void f_admin_edit(int ID, int aux_level) {
 								while (1) {
 
 									printf(	"Tipo de usuario:\n\n"
-											"1. Administrador\n"
-											"2. Estandar\n\n"
-											"Opcion => ");
+											"[1] Administrador\n"
+											"[2] Estandar\n\n"
+											"Opcion => [ ]\b\b");
 
 									v = scanf("%d", &op); buf();
 
@@ -1742,9 +1696,9 @@ void f_admin_edit(int ID, int aux_level) {
 			while (1) {
 
 				printf(	"Esta seguro que desea modificar el usuario:\n\n"
-						"1. Si\n"
-						"2. No\n\n"
-						"Opcion => ");
+						"[1] Si\n"
+						"[2] No\n\n"
+						"Opcion => [ ]\b\b");
 
 				v = scanf("%d", &op); buf();
 
@@ -1766,27 +1720,11 @@ void f_admin_edit(int ID, int aux_level) {
 
 								puts("Espere...\n");
 
-								#ifdef __linux__
-
-									system("sleep 1"); 
-
-								#elif _WIN32
-
-									Sleep(1000);
-
-								#endif	
+								wait(1);
 
 								puts("Usuario editado correctamente");
 
-								#ifdef __linux__
-
-									system("sleep 0.5"); 
-
-								#elif _WIN32
-
-									Sleep(500);
-
-								#endif
+								wait(0.5);
 
 								scr();
 
@@ -1808,15 +1746,7 @@ void f_admin_edit(int ID, int aux_level) {
 
 							puts("Edicion cancelada");
 
-							#ifdef __linux__
-
-								system("sleep 1"); 
-
-							#elif _WIN32
-
-								Sleep(1000);
-
-							#endif
+							wait(1);
 
 							scr();
 
@@ -1846,9 +1776,9 @@ void f_admin_edit(int ID, int aux_level) {
 				while (1) {
 
 					printf(	"Desea editar otro usuario?\n\n"
-							"1. Si\n"
-							"2. No\n\n"
-							"Opcion => ");
+							"[1] Si\n"
+							"[2] No\n\n"
+							"Opcion => [ ]\b\b");
 
 					v = scanf("%d", &op); buf();
 
@@ -2003,9 +1933,9 @@ void f_standar_edit(int ID, char *aux_username) {
 			while (1) {
 
 				printf(	"Desea modificar el nombre?\n\n"
-						"1. Si\n"
-						"2. No\n\n"
-						"Opcion => ");
+						"[1] Si\n"
+						"[2] No\n\n"
+						"Opcion => [ ]\b\b");
 
 				v = scanf("%d", &op); buf();
 
@@ -2062,9 +1992,9 @@ void f_standar_edit(int ID, char *aux_username) {
 			while (1) {
 
 				printf(	"Desea modificar la contraseña?\n\n"
-						"1. Si\n"
-						"2. No\n\n"
-						"Opcion => ");
+						"[1] Si\n"
+						"[2] No\n\n"
+						"Opcion => [ ]\b\b");
 
 				v = scanf("%d", &op); buf();
 
@@ -2117,9 +2047,9 @@ void f_standar_edit(int ID, char *aux_username) {
 			while (1) {
 
 				printf(	"Esta seguro que desea modificar el usuario:\n\n"
-						"1. Si\n"
-						"2. No\n\n"
-						"Opcion => ");
+						"[1] Si\n"
+						"[2] No\n\n"
+						"Opcion => [ ]\b\b");
 
 				v = scanf("%d", &op); buf();
 
@@ -2141,27 +2071,11 @@ void f_standar_edit(int ID, char *aux_username) {
 
 								puts("Espere...\n");
 
-								#ifdef __linux__
-
-									system("sleep 1"); 
-
-								#elif _WIN32
-
-									Sleep(1000);
-
-								#endif	
+								wait(1);
 
 								puts("Usuario editado correctamente");
 
-								#ifdef __linux__
-
-									system("sleep 0.5"); 
-
-								#elif _WIN32
-
-									Sleep(500);
-
-								#endif
+								wait(0.5);
 
 								scr();
 
@@ -2183,15 +2097,7 @@ void f_standar_edit(int ID, char *aux_username) {
 
 							puts("Edicion cancelada");
 
-							#ifdef __linux__
-
-								system("sleep 1"); 
-
-							#elif _WIN32
-
-								Sleep(1000);
-
-							#endif
+							wait(1);
 
 							scr();
 

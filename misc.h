@@ -46,11 +46,13 @@ void scr(void) {
 }
 
 //DETIENE EL PROGRAMA POR UN TIEMPO
-void wait(int n) {		// <-- wait(TIEMPO A ESPERAR EN SEGUNDOS)
+void wait(float n) {		// <-- wait(TIEMPO A ESPERAR EN SEGUNDOS)
 
 	#ifdef __linux__
 
-		sleep(n);
+		n = n * 1000000;
+
+		usleep(n);
 
 	#elif _WIN32
 
