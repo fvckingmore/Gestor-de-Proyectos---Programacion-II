@@ -1,6 +1,9 @@
 #ifndef MISC_H
 #define MISC_H
 
+
+
+//LIMPIA EL BUFFER
 void buf(void) { 
 
 	#ifdef __linux__
@@ -30,5 +33,7 @@ void scr(void) {
 
 	#endif
 }
+
+
 
 #endif

@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-#include "lib_user.c"
-
+#include "lib_user.h"
+#include "misc.h"
 
 int main(void) {	
 
