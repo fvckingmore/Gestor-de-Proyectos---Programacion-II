@@ -213,7 +213,7 @@ void f_add_users(int ID) {
 
 				if (!v || !(aux.level >= 1 && aux.level <= 2)) {
 
-					puts("Error, opcion incorrecta"); 
+					puts("Error, opcion incorrecta, presione una tecla para continuar..."); 
 
 					getchar(); 
 
@@ -303,6 +303,8 @@ void f_add_users(int ID) {
 
 				puts("Error al agregar el usuario");
 
+				getchar();
+
 			}
 
 		} while (op != 2);
@@ -387,6 +389,8 @@ void f_show_users(int ID) {
 
 
 				puts("");
+
+				wait(0.40);
 
 			}
 
@@ -539,6 +543,10 @@ int f_login(USER *user) {
 
 		}
 
+
+
+		if (v == 0) break; 
+
 	} while (v == 0);
 
 return (v);
@@ -566,6 +574,10 @@ int f_verify_login(char *temp_user, char *temp_pass, USER *user) {
 	if (filep == NULL) {
 
 		puts("Error al abrir el archivo");
+
+		getchar();
+
+		scr();
 
 
 	} else {
@@ -656,7 +668,11 @@ void f_standar_menu(USER user) {
 
 			if ( !v || !(op >= 0 && op <= 5) ) {
 
-				puts("Error, opcion incorrecta");
+				puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+				getchar();
+
+				scr();
 
 			}
 
@@ -733,6 +749,8 @@ void f_admin_menu(USER user) {
 
 		do {
 
+			scr();
+
 			printf(	"==================\n"
 					"= MENU PRINCIPAL =\n"
 					"==================\n\n");
@@ -752,7 +770,11 @@ void f_admin_menu(USER user) {
 
 			if ( !v || !(op >= 0 && op <= 4) ) {
 
-				puts("Error, opcion incorrecta");
+				puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+				getchar();
+
+				scr();
 
 			}
 
@@ -824,6 +846,10 @@ void f_relative_users_delete(int ID) {
 
 		puts("Error al abrir el archivo");
 
+		getchar();
+
+		scr();
+
 
 	} else {
 
@@ -837,7 +863,9 @@ void f_relative_users_delete(int ID) {
 
 			printf("Ingrese el usuario que desea eliminar: "); 
 
-			gets(temp_user); del = 0;
+			gets(temp_user); 
+
+			del = 0;
 
 			puts("");
 
@@ -856,11 +884,16 @@ void f_relative_users_delete(int ID) {
 
 				if ( !v || !( op >= 1 && op <= 2 ) ) {
 
-					puts("Error, opcion incorrecta");
+					puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+					getchar();
+
+					scr();
 
 				}
 
 			} while ( !v || !(op >= 1 && op <= 2) );
+
 
 
 			if (op == 1) {
@@ -869,14 +902,22 @@ void f_relative_users_delete(int ID) {
 
 					if ( (strcmp(temp_user, aux.username) == 0) && aux.del == 0 ) {
 
-						fseek(filep, ftell(filep) - sizeof(USER), SEEK_SET);
+						if (ID == aux.admin_id) {
 
-						aux.del = 1;
+							fseek(filep, ftell(filep) - sizeof(USER), SEEK_SET);
 
-						fwrite(&aux, sizeof(USER), 1, filep);
+							aux.del = 1;
 
-						del = 1; break;
+							fwrite(&aux, sizeof(USER), 1, filep);
+
+							del = 1; 
+
+							break;
+
+						} 
+
 					} 
+
 				}
 
 
@@ -900,7 +941,9 @@ void f_relative_users_delete(int ID) {
 
 					scr();	
 
-					puts("El usuario ingresado no existe");	getchar();
+					puts("El usuario no existe o no puede ser borrado");
+
+					getchar();
 
 				}
 
@@ -918,7 +961,12 @@ void f_relative_users_delete(int ID) {
 
 					if ( !v || !( op >= 1 && op <= 2 ) ) {
 
-						puts("Error, opcion incorrecta");
+						puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+						getchar();
+
+						scr();
+
 					}
 
 				} while ( !v || !( op >= 1 && op <= 2 ) );
@@ -956,6 +1004,10 @@ int f_verify_username(char *temp_user) {
 	if (filep == NULL) {
 
 		puts("Error al abrir el archivo");
+
+		getchar();
+
+		scr();
 
 
 	} else {
@@ -1007,6 +1059,10 @@ void f_absolute_users_delete(void) {
 
 		puts("Error al abrir el archivo");
 
+		getchar();
+
+		scr();
+
 
 	} else {
 
@@ -1026,7 +1082,12 @@ void f_absolute_users_delete(void) {
 
 			if ( !v || !(op >= 1 && op <= 2) ) {
 
-				puts("Error, opcion incorrecta");
+				puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+				getchar();
+
+				scr();
+
 			}
 
 		} while ( !v || !(op >= 1 && op <= 2) );
@@ -1105,6 +1166,10 @@ int f_verify_admin_id(int ID) {
 
 		puts("Error al abrir el archivo");
 
+		getchar();
+
+		scr();
+
 
 	} else {
 
@@ -1154,6 +1219,10 @@ int f_verify_id(int ID) {
 
 		puts("Error al abrir el archivo");
 
+		getchar();
+
+		scr();
+
 
 	} else {
 
@@ -1199,6 +1268,8 @@ void f_admin_users_manager_menu(USER user) {
 
 		do {
 
+			scr();
+
 			printf(	"==============================\n"
 					"= ADMINISTRACION DE USUARIOS =\n"
 					"==============================\n\n");
@@ -1219,9 +1290,11 @@ void f_admin_users_manager_menu(USER user) {
 
 			if ( !v || !( op >= 0 && op <= 5 ) ) {
 
-				puts("Error, opcion incorrecta");
+				puts("Error, opcion incorrecta, presione una tecla para continuar...");
 
 				getchar();
+
+				scr();
 
 			}
 
@@ -1339,6 +1412,8 @@ void f_show_all_users(void) {
 
 			puts("");
 
+			wait(0.40);
+
 		}
 
 	}
@@ -1391,9 +1466,13 @@ void f_admin_edit(int ID, int aux_level) {
 
 			if ( strcmp(aux_username, aux.username) == 0 ) {
 
-				exist = 1;
+				if (aux.level == 2) {
 
-				break;
+					exist = 1;
+
+					break;
+
+				}
 
 			}
 
@@ -1481,14 +1560,23 @@ void f_admin_edit(int ID, int aux_level) {
 
 					} else {
 
-						puts("Error, opcion incorrecta");
+						puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+						getchar();
+
+						scr();
 
 					}
 
 
 				} else {
 
-					puts("Error, opcion incorrecta");
+					puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+					getchar();
+
+					scr();
+
 				}
 
 			}
@@ -1540,14 +1628,23 @@ void f_admin_edit(int ID, int aux_level) {
 
 					} else {
 
-						puts("Error, opcion incorrecta");
+						puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+						getchar();
+
+						scr();
 
 					}	
 
 
 				} else {
 
-					puts("Error, opcion incorrecta");
+					puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+					getchar();
+
+					scr();
+
 				}
 
 			}
@@ -1647,13 +1744,23 @@ void f_admin_edit(int ID, int aux_level) {
 
 										} else {
 
-											puts("Error, opcion incorrecta");
+											puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+											getchar();
+
+											scr();
+
 										}
 
 
 									} else {
 
-										puts("Error, opcion incorrecta");
+										puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+										getchar();
+
+										scr();
+
 									}
 
 								}
@@ -1672,13 +1779,23 @@ void f_admin_edit(int ID, int aux_level) {
 
 						} else {
 
-							puts("Error, opcion incorrecta");
+							puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+							getchar();
+
+							scr();
+
 						}
 
 
 					} else {
 
-						puts("Error, opcion incorrecta");
+						puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+						getchar();
+
+						scr();
+
 					}
 
 				}
@@ -1733,6 +1850,10 @@ void f_admin_edit(int ID, int aux_level) {
 
 								puts("Error, no se pudo editar el usuario");
 
+								getchar();
+
+								scr();
+
 							}
 
 
@@ -1757,14 +1878,24 @@ void f_admin_edit(int ID, int aux_level) {
 
 					} else {
 
-						puts("Error, opcion incorrecta");
+						puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+						getchar();
+
+						scr();
+
 
 					}
 
 
 				} else {
 
-					puts("Error, opcion incorrecta");
+					puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+					getchar();
+
+					scr();
+
 				}
 
 			}
@@ -1793,14 +1924,22 @@ void f_admin_edit(int ID, int aux_level) {
 
 						} else {
 
-							puts("Error, opcion incorrecta");
+							puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+							getchar();
+
+							scr();
 
 						}
 
 
 					} else {
 
-						puts("Error, opcion incorrecta");
+						puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+						getchar();
+
+						scr();
 
 					}
 
@@ -1829,7 +1968,14 @@ void f_admin_edit(int ID, int aux_level) {
 
 		} else {
 
-			puts("El usuario no existe");
+			scr();
+
+			puts("El usuario no existe o no puede ser editado");
+
+			getchar();
+
+			break;
+
 		}
 
 	}
@@ -1965,14 +2111,24 @@ void f_standar_edit(int ID, char *aux_username) {
 
 					} else {
 
-						puts("Error, opcion incorrecta");
+						puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+						getchar();
+
+						scr();
+
 
 					}
 
 
 				} else {
 
-					puts("Error, opcion incorrecta");
+					puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+					getchar();
+
+					scr();
+
 				}
 
 			}
@@ -2024,14 +2180,24 @@ void f_standar_edit(int ID, char *aux_username) {
 
 					} else {
 
-						puts("Error, opcion incorrecta");
+						puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+						getchar();
+
+						scr();
+
 
 					}	
 
 
 				} else {
 
-					puts("Error, opcion incorrecta");
+					puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+					getchar();
+
+					scr();
+
 				}
 
 			}
@@ -2084,6 +2250,10 @@ void f_standar_edit(int ID, char *aux_username) {
 
 								puts("Error, no se pudo editar el usuario");
 
+								getchar();
+
+								scr();
+
 							}
 
 
@@ -2108,14 +2278,24 @@ void f_standar_edit(int ID, char *aux_username) {
 
 					} else {
 
-						puts("Error, opcion incorrecta");
+						puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+						getchar();
+
+						scr();
+
 
 					}
 
 
 				} else {
 
-					puts("Error, opcion incorrecta");
+					puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+					getchar();
+
+					scr();
+
 				}
 
 			}

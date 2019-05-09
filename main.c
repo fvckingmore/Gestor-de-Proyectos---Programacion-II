@@ -87,7 +87,7 @@ int main(void) {
 
 					scr(); 
 
-					puts("Entrando a modo debbug");
+					puts("Entrando a modo GOD...");
 
 					wait(1.5);
 
@@ -107,13 +107,17 @@ int main(void) {
 
 				} else {
 
-					scr(); puts("Error, opcion incorrecta"); getchar();
+					puts("Error, opcion incorrecta"); 
+
+					getchar();
 
 				}
 
 			} else {
 
-				scr(); puts("Error, opcion incorrecta"); getchar();
+				puts("Error, opcion incorrecta"); 
+
+				getchar();
 			}
 
 		}
