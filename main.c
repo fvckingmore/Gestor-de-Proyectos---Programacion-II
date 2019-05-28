@@ -4,6 +4,7 @@
 #include <string.h>
 #include "lib_user.h"
 #include "misc.h"
+#include "lib_pro.h"
 
 int main(void) {	
 
@@ -13,123 +14,111 @@ int main(void) {
 
 
 	
-	while (1) {
-
-		scr();
-
-
+	if (1 == 1) {
 
 		while (1) {
 
 			scr();
-			
-			/*printf(	"      .       ......      ..     ........     ....      ...\n"
-					" .lxdooodk,  xXoooooc  lkdoodxd :oooXNdool .xOdccdOd.  cWdooxO,\n"
-					".Xx       .  xO       ,Mc           O0     Kd      k0  cN.   kO\n"
-					"lN.   .''..  xNxxxxxl  l00kdl;.     O0    ,M,      ;M. cW:;;o0'\n"
-					":W,   :ccNo  xO           ..,dN'    O0    .W:      lN. cW:,lXc\n"
-					" oXo'. .'Xo  x0...... 'l,....oX.    O0     :Ko'..'dK;  cN.  .x0;\n"
-					"   ,coooc,   'cccccc;  ,clooc,      ,;       ,cooc,    .:     'c.\n\n"
-
-					".XOxxxkd'   .XOxxxxx'\n"
-					".M;    ,0x  .M,      \n"
-					".M;     'Mc .Mkooooo.\n"
-					".M;     ,M: .M,      \n"
-					".M;   .:0l  .M,      \n"
-					".kdoooo:.   .kdooooo.\n\n"
-
-
-					".ooool;   cooooc.     'loooo;   ;c     ;c  coooooo;   .;lool;.:ooooooool  .cooooc.    .coooc;.\n"
-					".Mo...xX. 00...:N:   xK;   .dX. .Ok   o0.  Kk.....   dKc....c: ...kX.... cXc.  .cX;  oK,...,l,\n"
-					".Ml   ;W' 0O   .Nc  :W.      kO   xO'kk    K0,,,,,. oW'           xK    .W:      lN. xK,..    \n"
-					".M0oodx,  0Xod0K,   lN       dK    oMd     K0;,,,,. OX            xK    ,M,      ;M.  'coxxOx'\n"
-					".Ml       0O  .OO.  .Wc     .Xo    ,M:     Kx       cMc           xK     Kx      OO         K0\n"
-					".Ml       0O    :Ko. 'kkoclxOc     ,M:     KXooooo;  ;kklccox:    xK     .xOdccdOd.  dkocclxO'\n"
-					"                        ....                            ....                ....       ....   \n");*/
-
-			printf(	"=======================\n"
-					"=      BIENVENIDO     =\n"
-					"=                     =\n"
-					"=          AL         =\n"
-					"=                     =\n"
-					"= GESTOR DE PROYECTOS =\n"
-					"=======================\n\n"
-
-					"[1] Ingresar\n"
-					"[0] Salir\n\n"
-					"Opcion => [ ]\b\b");
-
-			v = scanf("%d", &op);	buf();
 
 
 
-			if (v) {
+			while (1) {
 
-				if ( op == 1 ) {
+				scr();
 
-					switch ( f_login(&user) ) {
+				printf(	"=======================\n"
+						"=      BIENVENIDO     =\n"
+						"=                     =\n"
+						"=          AL         =\n"
+						"=                     =\n"
+						"= GESTOR DE PROYECTOS =\n"
+						"=======================\n\n"
 
-						case 1: 
+						"[1] Ingresar\n"
+						"[0] Salir\n\n"
+						"Opcion => [ ]\b\b");
 
-							f_admin_menu(user);
+				v = scanf("%d", &op);	buf();
 
-							break;
 
-						case 2:
 
-							f_standar_menu(user);
+				if (v) {
 
-							break;
+					if ( op == 1 ) {
+
+						switch ( f_login(&user) ) {
+
+							case 1: 
+
+								f_admin_menu(user);
+
+								break;
+
+							case 2:
+
+								f_standar_menu(user);
+
+								break;
+
+						}
+
+					} else if (op == 1234) {
+
+						scr(); 
+
+						puts("Entrando a modo GOD...");
+
+						wait(1.5);
+
+						scr();
+
+						f_show_all_users();
+
+						getchar();
+
+					} else if (op == 0) {
+
+						scr(); 
+
+						//puts("Hasta luego"); 
+
+						break;
+
+					} else {
+
+						puts("Error, opcion incorrecta"); 
+
+						getchar();
 
 					}
-
-				} else if (op == 1234) {
-
-					scr(); 
-
-					puts("Entrando a modo GOD...");
-
-					wait(1.5);
-
-					scr();
-
-					f_show_all_users();
-
-					getchar();
-
-				} else if (op == 0) {
-
-					scr(); 
-
-					//puts("Hasta luego"); 
-
-					break;
 
 				} else {
 
 					puts("Error, opcion incorrecta"); 
 
 					getchar();
-
 				}
 
-			} else {
-
-				puts("Error, opcion incorrecta"); 
-
-				getchar();
 			}
 
-		}
+			
 
-		
+			if (op == 0) {
 
-		if (op == 0) {
+				break;
+			}
 
-			break;
-		}
+		} 
 
-	} 
+	}
+
+	
+	
+	if (1 == 0) {
+
+		f_add_users(1);
+
+	}
 
 	
 

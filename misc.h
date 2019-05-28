@@ -13,6 +13,30 @@
 
 #endif
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+
+
+//=============
+/*ESTRUCTURAS*/
+//=============
+
+typedef struct DT{
+	
+	int day, month, year;
+	
+} DT;
+
+
+
+//===========
+/*FUNCIONES*/
+//===========
+
+
 
 //LIMPIA EL BUFFER
 void buf(void) { 
@@ -60,6 +84,102 @@ void wait(float n) {		// <-- wait(TIEMPO A ESPERAR EN SEGUNDOS)
 		Sleep(n);
 
 	#endif
+
+}
+
+//COMPARACION DE CADENAS MEJORADA
+int compare(char *string1, char *string2) {
+	
+	char aux[ strlen(string1) ], aux2[ strlen(string2) ];
+
+	int i, j;
+	
+
+
+	for (i = 0, j = 0; i < strlen(string1); j++) {
+
+		if ( isalnum(string1[j]) ) {
+
+			aux[i] = toupper(string1[j]);
+
+			i++;
+		}
+
+	}
+
+
+
+	aux[i] = '\0';
+
+
+
+	for (i = 0, j = 0; i < strlen(string2); j++) {
+
+		if ( isalnum(string2[j]) ) {
+
+			aux2[i] = toupper(string2[j]);
+
+			i++;
+		}
+
+	}
+
+
+
+	aux2[i] = '\0';
+
+
+	
+	if ( strcmp(aux, aux2) == 0 )
+
+		return 0;
+
+
+	else
+
+		return 1;
+
+}
+
+
+
+//COMPARACION DE FECHAS
+int f_compare_dt(DT date1, DT date2){
+	
+	int band;
+
+
+	
+	if (date1.year > date2.year) {
+		
+		band = 1;
+
+		
+	} else if (date1.year == date2.year) {
+		
+		if (date1.month > date2.month) {
+			
+			band = 1;
+
+		
+		} else if (date1.month == date2.month) {
+			
+			if (date1.day > date2.day) {
+				
+				band = 1;
+				
+
+			} else if (date1.day == date2.day) {
+				
+				band = 0;
+				
+			}
+
+		}
+		
+	}
+	
+return (band);
 
 }
 

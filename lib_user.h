@@ -16,6 +16,8 @@ PARA ENTRAR EN MODO DEBUG, AL INGRESAR LA OPCION TECLEAR " 1234 "
 #include <string.h>
 #include <time.h>
 #include "misc.h"
+#include "lib_pro.h"
+
 
 //DEFINE LIBRERIAS SEGUN LA PLATAFORMA EN LA CUAL SE TRABAJA
 
@@ -32,9 +34,9 @@ PARA ENTRAR EN MODO DEBUG, AL INGRESAR LA OPCION TECLEAR " 1234 "
 /*ESTRUCTURAS*/	
 //=============
 
-typedef struct {	//ESTRUCTURA TIPO USUARIO
+typedef struct USER {	//ESTRUCTURA TIPO USUARIO
 
-	char username[15], password[15];
+	char username[15], password[15], name[40];
 	int level, del, id, admin_id;
 
 } USER;
@@ -177,7 +179,11 @@ void f_add_users(int ID) {
 
 			do{
 
-				printf("Ingrese su nombre de usuario: "); 
+				printf("Ingrese el nombre del usuario: "); 
+				
+				gets(aux.name);
+
+				printf("Ingrese el Username: "); 
 				
 				gets(aux.username);
 
@@ -189,7 +195,7 @@ void f_add_users(int ID) {
 
 				}
 
-			}while ( f_verify_username(aux.username) == 1 );
+			} while ( f_verify_username(aux.username) == 1 );
 
 
 
@@ -355,9 +361,11 @@ void f_show_users(int ID) {
 
 			if ( !aux.del && aux.admin_id == ID ) {
 
+				printf("Nombre: %s\n", aux.name);
+
 				printf("Usuario: %s\n", aux.username);
 
-				printf("Contraseña: %s\n", aux.password);
+				//printf("Contraseña: %s\n", aux.password);
 
 
 
@@ -367,9 +375,9 @@ void f_show_users(int ID) {
 
 						puts("Nivel: Normal"); 
 
-						printf("ADMIN ID: %d\n", aux.admin_id);	//TEMPORAL
+						//printf("ADMIN ID: %d\n", aux.admin_id);	//TEMPORAL
 
-						printf("ID: %d\n", aux.id);	//TEMPORAL
+						//printf("ID: %d\n", aux.id);	//TEMPORAL
 
 						break;
 
@@ -378,9 +386,9 @@ void f_show_users(int ID) {
 
 						puts("Nivel: Administrador"); 
 
-						printf("ADMIN ID: %d\n", aux.admin_id);	//TEMPORAL
+						//printf("ADMIN ID: %d\n", aux.admin_id);	//TEMPORAL
 
-						printf("ID: %d\n", aux.id);	//TEMPORAL
+						//printf("ID: %d\n", aux.id);	//TEMPORAL
 
 						break;
 
@@ -652,13 +660,12 @@ void f_standar_menu(USER user) {
 					"= MENU PRINCIPAL =\n"
 					"==================\n\n");
 
-			printf("Que desea hacer, %s: \n\n", user.username);
+			printf("Que desea hacer, %s: \n\n", user.name);
 
 			printf(	"[1] Buscar proyectos\n"
 					"[2] Administrar tareas\n"
-					"[3] Reporte de tareas\n"
-					"[4] Grafica de Gantt\n"
-					"[5] Editar Usuario\n"
+					"[3] Grafica de Gantt\n"
+					"[4] Editar Usuario\n"
 					"[0] Salir\n\n"
 					"Opcion => [ ]\b\b");
 
@@ -684,33 +691,31 @@ void f_standar_menu(USER user) {
 
 			case 1: 
 
-				puts("Buscar");
+				f_find_project();
+
+				/*puts("Buscar");*/
 
 				break;
 
 
 			case 2: 
 
-				puts("Tareas");
+				/*puts("Tareas");*/
+
+				f_verify_id_project();
 
 				break;
+
 
 
 			case 3: 
-
-				puts("Reporte");
-
-				break;
-
-
-			case 4: 
 
 				puts("Grafica");
 
 				break;
 
 
-			case 5: 
+			case 4: 
 
 				f_standar_edit(user.id, user.username);
 
@@ -755,12 +760,11 @@ void f_admin_menu(USER user) {
 					"= MENU PRINCIPAL =\n"
 					"==================\n\n");
 
-			printf("Que desea hacer, %s: \n\n", user.username);
+			printf("Que desea hacer, %s: \n\n", user.name);
 
 			printf(	"[1] Administrar usuarios\n"
 					"[2] Administrar proyectos\n"
-					"[3] Administrar tareas\n"
-					"[4] Grafica de Gantt\n"
+					"[3] Grafica de Gantt\n"
 					"[0] Salir\n\n"
 					"Opcion => [ ]\b\b");
 
@@ -792,19 +796,14 @@ void f_admin_menu(USER user) {
 
 			case 2: 
 
-				puts("Administrar proyectos");
+				/*puts("Administrar proyectos");*/
+
+				f_menu_project();
 
 				break;
 
 
 			case 3: 
-
-				puts("Administrar tareas");
-
-				break;
-
-
-			case 4: 
 
 				puts("Grafica");
 
@@ -1376,6 +1375,8 @@ void f_show_all_users(void) {
 	} else {
 
 		while ( fread(&aux, sizeof(USER), 1, filep) && !feof(filep) ){
+
+			printf("Nombre: %s\n", aux.name);
 
 			printf("Usuario: %s\n", aux.username);
 
