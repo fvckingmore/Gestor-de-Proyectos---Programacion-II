@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "misc.h"
+#include "lib_user.h"
 #define name_file "task.bin"
 
 
@@ -14,7 +15,7 @@ typedef struct TASK {
 	
 	DT start, end;
 	int del, status;
-	char ref[10], p_id[10];
+	char ref[10], p_id[10], user[50];
 	char information[100];
 	
 } TASK;
@@ -58,6 +59,7 @@ void f_abso_del_task(PROJECT project);
 void f_menu_add_task(PROJECT project);
 void f_add_task(PROJECT project);
 void f_add_last_task(PROJECT project);
+void f_finish_task(PROJECT project);
 
 
 
@@ -104,8 +106,7 @@ void f_menu_task(PROJECT project) {
 				"[3] Finalizar Tareas\n"
 				"[4] Mostrar Tareas\n"
 				"[5] Reporte\n"
-				"[6] Fecha Fin tareas\n"
-				"[7] Vaciar papelera\n"
+				"[6] Vaciar papelera\n"
 				"[0] Menu anterior\n\n"
 				"Opcion => [ ]\b\b");
 
@@ -135,7 +136,7 @@ void f_menu_task(PROJECT project) {
 		
 			case 1:
 
-				f_menu_add_task(project);
+				f_add_task(project);
 
 				break;
 
@@ -149,7 +150,7 @@ void f_menu_task(PROJECT project) {
 			
 			case 3:
 				
-				f_change_status_task(project);
+				f_finish_task(project);
 				
 				break;
 
@@ -169,15 +170,8 @@ void f_menu_task(PROJECT project) {
 				
 				break;
 
-				
+			
 			case 6:
-			
-				f_end_task(project);
-				
-				break;
-
-			
-			case 7:
 				
 				f_abso_del_task(project);
 				
@@ -346,6 +340,8 @@ void f_show_all_task(PROJECT project) {
 
 			printf("Descripcion: %s\n\n", aux.information);
 
+			printf("Encargado: %s\n\n", aux.user);
+
 			printf("Estatus: %d\n", aux.status);
 
 			printf("Eliminado: %d\n", aux.del);
@@ -355,6 +351,8 @@ void f_show_all_task(PROJECT project) {
 			printf("Fecha de fin: %i-%i-%i\n", aux.end.day, aux.end.month, aux.end.year);
 
 			printf("Proyecto: %s\n\n", aux.p_id);
+
+			puts("");
 
 			}
 
@@ -369,127 +367,7 @@ void f_show_all_task(PROJECT project) {
 
 }
 
-/*
-	----------------------------------------------------------------------
-	|*MENU DE ADMINISTRACION DE TAREAS*
-	----------------------------------------------------------------------
-*/
 
-/*void f_menu_task(PROJECT project) {
-
-	f_load_task(project);
-	int op;
-
-
-	
-	do {
-		
-		printf(	"=================================\n"
-				"= MENU ADMINISTRACION DE TAREAS =\n"
-				"=================================\n\n");
-		
-		printf("Proyecto: %s.\n\n", project.title);
-			
-		printf(	"[0] Menu anterior\n"
-				"[1] Crear Tareas\n"
-				"[2] Eliminar Tareas\n"
-				"[3] Finalizar Tareas\n"
-				"[4] Mostrar Tareas\n"
-				"[5] Reporte\n"
-				"[6] Ordenar tareas\n"
-				"[7] Fecha Fin tareas\n"
-				"[8] Vaciar papelera\n\n"
-				"Opcion => [ ]\b\b");
-
-		scanf("%i",&op);
-
-		buf();
-		
-		scr();
-
-
-
-		switch(op){
-			
-			case 0:
-				
-				f_save_task(project);
-								
-				break;
-
-			
-			case 1234:
-				
-				f_show_all_task(project);
-				
-				break;
-
-		
-			case 1:
-					
-				f_menu_add_task(project);
-							
-				break;
-
-			
-			case 2:
-				
-				f_del_task(project);
-				
-				break;
-
-			
-			case 3:
-				
-				f_change_status_task(project);
-				
-				break;
-
-				
-			case 4:
-			
-				f_show_task(project);
-				
-				break;
-
-			
-			case 5:
-				
-				f_print_report_task(project);
-				
-				break;
-
-				
-			case 6:
-				
-				f_sort_task(project);
-				
-				break;
-
-				
-			case 7:
-			
-				f_end_task(project);
-				
-				break;
-
-			
-			case 8:
-				
-				f_abso_del_task(project);
-				
-				break;
-				
-			
-			default:
-				
-				puts("Opcion erronea.");
-			
-		}
-		
-	} while (op != 0);
-	
-}*/
 
 /*
 	----------------------------------------------------------
@@ -528,7 +406,7 @@ void f_del_task(PROJECT project) {
 		
 
 
-		puts("Eliminar tarea.\n");
+		puts("Eliminar tarea\n");
 
 		printf("Ingrese el nombre de la tarea: ");
 
@@ -830,6 +708,8 @@ void f_show_task(PROJECT project) {
 
 						printf("Descripcion: %s\n\n", aux -> task.information);
 
+						printf("Encargado: %s\n\n", aux -> task.user);
+
 						printf("Estatus: %s\n", "En ejecucion");
 
 						printf("Fecha de inicio: %i-%i-%i\n", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year);
@@ -844,6 +724,8 @@ void f_show_task(PROJECT project) {
 						printf("Nombre: %s\n\n", aux -> task.ref);
 
 						printf("Descripcion: %s\n\n", aux -> task.information);
+
+						printf("Encargado: %s\n\n", aux -> task.user);
 
 						printf("Estatus: %s\n", "En ejecucion");
 
@@ -861,6 +743,8 @@ void f_show_task(PROJECT project) {
 					printf("Nombre: %s\n\n", aux -> task.ref);
 
 					printf("Descripcion: %s\n\n", aux -> task.information);
+
+					printf("Encargado: %s\n\n", aux -> task.user);
 
 					printf("Estatus: %s\n", "Terminado");
 
@@ -1329,7 +1213,10 @@ void f_menu_add_task(PROJECT project) {
 void f_add_task(PROJECT project) {
 	
 	LIST *task, *aux;
-	FILE *file;
+	FILE *file, *filep;
+	char temp_user[15];
+	USER tmp;
+	int b;
 	
 
 
@@ -1359,6 +1246,8 @@ void f_add_task(PROJECT project) {
 			
 			file = fopen(name_file, "ab");
 
+			filep = fopen("users.bin", "rb");
+
 			
 
 			if (file == NULL) {
@@ -1387,6 +1276,45 @@ void f_add_task(PROJECT project) {
 					gets(task -> task.information);
 
 					puts("");
+
+
+
+					while (1) {
+
+						fseek(filep, 0, SEEK_SET);
+
+						printf("Ingrese el usuario encargado: "); 
+
+						gets(temp_user); 
+
+						puts("");
+
+						b = 0;
+
+
+
+						while ( fread(&tmp, sizeof(USER), 1, filep) && !feof(filep) ) {
+
+							if ( (compare(temp_user, tmp.username) == 0) ) {
+
+								strcpy(task -> task.user, tmp.name);
+
+								b = 1;
+
+								break;
+
+							} 
+
+						}
+
+
+
+						if (b == 0) puts("No existe el usuario");
+						
+
+						else break;
+
+					}
 					
 
 
@@ -2071,7 +1999,7 @@ int f_cnt_task() {
 
 
 		
-		if (i <= 19)
+		if (i <= 20)
 
 			return 1;
 
@@ -2118,6 +2046,321 @@ void f_flush_task(void) {
 
 
 
+}
+
+
+
+//============================
+/*FINALIZA TAREA MANUALMENTE*/
+//============================
+
+void f_finish_task(PROJECT project) {
+	
+	LIST *task;
+	FILE *file;
+	TASK temp;
+
+
+
+	file = fopen(name_file, "rb+");
+
+	scr();
+	
+
+
+	if (head == NULL) {
+		
+		puts("No hay tareas en la lista");
+
+		getchar();
+	
+
+	} else {
+		
+		task = head;
+		
+		int band = 0;
+		int band3 = 0;
+		char name[10], op;
+		
+
+
+		puts("Terminar tarea\n");
+
+		printf("Ingrese el nombre de la tarea: ");
+
+		gets(name);
+
+		puts("\nEspere...");
+
+		wait(1);
+
+		scr();
+
+		
+
+		while ( task != NULL && band == 0 ) {
+			
+			if ( compare(name, task -> task.ref) == 0 || strcmp(name, task -> task.ref) == 0 ) {
+				
+				puts("Tarea Encontrada");
+
+				wait(0.75);
+
+				band = 1;
+
+				scr();
+
+				break;
+
+
+			} else {
+				
+				task = task -> next;
+			
+			}
+			
+		}
+
+
+		
+		if (band) {
+		
+			printf("\nEsta seguro de terminar la tarea %s? (s/n)\n", task -> task.ref);
+		
+			printf("\nOpcion => [ ]\b\b");
+
+			scanf("%c", &op);
+
+			buf();
+
+			scr();
+
+
+			
+ 			switch ( toupper(op) ) {
+			
+				case 'S':
+					
+					task -> task.status = 1;
+
+
+
+					do {
+			
+						puts("Fecha de Finalizacion (dd/mm/aaaa): \n\n");
+						
+						printf("Dia: ");
+
+						scanf("%i", &task -> task.end.day);
+
+						buf();
+						
+						printf("Mes: ");
+
+						scanf("%i", &task -> task.end.month);
+
+						buf();
+						
+						printf("Anio: ");
+
+						scanf("%i", &task -> task.end.year);
+
+						buf();
+						
+						band = 0;
+
+						band3 = 0;
+
+
+						
+						if ((task -> task.end.year < 2030) &&
+							(task -> task.end.year > 2000)) {
+							
+							if( (task -> task.end.month == 2) && 
+								(task -> task.end.day < 29) &&
+								(task -> task.end.day > 0) ) {
+								
+								band = 1;
+								
+
+							} else if ( (task -> task.end.month == 1) ||
+										(task -> task.end.month == 3) ||
+										(task -> task.end.month == 5) ||
+										(task -> task.end.month == 7) ||
+										(task -> task.end.month == 8) ||
+										(task -> task.end.month == 10) ||
+										(task -> task.end.month == 12) ) {
+								
+								if (task -> task.end.day < 32 &&
+									task -> task.end.day > 0) {
+									
+									band = 1;
+									
+								}			
+							} else if ( (task -> task.end.month == 4) ||
+										(task -> task.end.month == 6) ||
+										(task -> task.end.month == 9) ||
+										(task -> task.end.month == 11) ) {
+								
+								if (task -> task.end.day < 31 && 
+									task -> task.end.day > 0) {	
+									
+									band = 1;
+
+								}
+														
+							}
+
+
+						} else if ( (task -> task.end.year % 4) == 0 ) {
+							
+							if ((task -> task.end.month == 2) && 
+								(task -> task.end.day < 30) &&
+								(task -> task.end.day > 0)) {
+								
+								band = 1;
+								
+
+							} else if ( (task -> task.end.month == 1) ||
+										(task -> task.end.month == 3) ||
+										(task -> task.end.month == 5) ||
+										(task -> task.end.month == 7) ||
+										(task -> task.end.month == 8) ||
+										(task -> task.end.month == 10) ||
+										(task -> task.end.month == 12) ) {
+								
+								if (task -> task.end.day < 32 && 
+									task -> task.end.day > 0) {
+									
+									band = 1;
+									
+								}			
+
+
+							} else if ( (task -> task.end.month == 4) ||
+								(task -> task.end.month == 6) ||
+								(task -> task.end.month == 9) ||
+								(task -> task.end.month == 11) ) {
+								
+								if (task -> task.end.day < 31 && 
+									task -> task.end.day > 0) {	
+									
+									band = 1;
+
+								}
+														
+							}
+							
+						}
+
+
+
+						if (band == 0) {
+						
+							puts("Ingreso los datos de forma incorrecta.\n\nFecha: (dd/mm/aaaa)");
+
+							wait(0.3);
+							
+						}
+						
+						
+						
+						//COMPARA SI LA ULTIMA TAREA ES MAYOR QUE LA ANTERIOR
+						if (f_compare_dt(task -> task.end, task -> task.start) == 1 ||
+							f_compare_dt(task -> task.end, task -> task.start) == 0) {
+								
+								band3 = 1;
+								
+
+							} else {
+								
+								puts("La tarea debe tener una fecha mayor a la anterior");
+
+								wait(0.3);	
+
+								band3 = 0;
+
+							}
+						
+						if ( band ==1 && band3 == 1 ) break;
+
+					} while (1);
+
+
+					
+					scr();
+
+					wait(0.5);
+
+					puts("Espere...\n");
+
+					wait(1.5);
+
+					fseek(file, 0, SEEK_SET);
+
+
+
+					while ( fread(&temp, sizeof(TASK), 1, file) && !feof(file) ) {
+
+						if ( (compare(name, temp.ref) == 0) && temp.del == 0 ) {
+
+							fseek(file, ftell(file) - sizeof(TASK), SEEK_SET);
+
+							temp.status = 1;
+
+							temp.end.year = task -> task.end.year;
+
+							temp.end.month = task -> task.end.month;
+
+							temp.end.day = task -> task.end.day;
+
+							fwrite(&temp, sizeof(TASK), 1, file);
+
+							break;
+
+						} 
+
+					}
+
+					puts("Tarea Eliminada");
+
+					wait(1);
+
+					scr();
+
+					break;
+
+				
+				case 'N':
+					
+					puts("Tarea no eliminada");				
+
+					wait(0.75);
+
+					scr();
+					
+					break;				
+					
+			}
+
+			
+		} else {
+			
+			puts("La tarea no se encuentra registrada");
+
+			wait(0.75);
+
+			scr();
+			
+		}
+
+	}
+
+
+
+	fclose(file);
+	
 }
 
 
