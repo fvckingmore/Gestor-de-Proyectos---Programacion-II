@@ -146,7 +146,7 @@ int compare(char *string1, char *string2) {
 //COMPARACION DE FECHAS
 int f_compare_dt(DT date1, DT date2){
 	
-	int band;
+	int band = 2;
 
 
 	

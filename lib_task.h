@@ -6,15 +6,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "misc.h"
+#define name_file "task.bin"
 
 
 
 typedef struct TASK {
 	
 	DT start, end;
-	int del,status;
+	int del, status;
 	char ref[10], p_id[10];
-	char louder[25], infor[25];
+	char information[100];
 	
 } TASK;
 
@@ -29,7 +30,7 @@ typedef struct LIST {
 LIST *head = NULL, *tail = NULL;
 
 
-typedef struct PROJECT {
+typedef struct PROJECT {	//TEMPORAL
 
 	DT start, end;
 	char title[20], id[10];
@@ -39,12 +40,13 @@ typedef struct PROJECT {
 
 
 
-void f_verify_id_project();
 int f_cnt_task();
+void f_flush_task(void);
+
+void f_save_task(TASK aux);
 
 void f_menu_task(PROJECT project);
 void f_load_task(PROJECT project);
-void f_save_task(PROJECT project);
 void f_show_all_task(PROJECT project);
 void f_del_task(PROJECT project);
 void f_change_status_task(PROJECT project);
@@ -65,92 +67,6 @@ void f_add_last_task(PROJECT project);
 
 
 
-/*
-	---------------------------------------------------------------------
-	|*VERIFICA SI UN PROYECTO EXISTE, SI ES ASI, ABRE EL MENU DE TAREAS*
-	--------------------------------------------------------------------
-*/
-
-
-
-void f_verify_id_project() {
-	
-	FILE *file = fopen("project.bin", "rb");
-
-
-	
-	if (file != NULL) {
-		
-		PROJECT aux;
-		char id[10];
-		int band = 0;
-		
-
-
-		//f_show_project();	
-		
-		wait(1);
-
-		printf("\n\nIngrese el codigo del proyecto: ");
-
-		gets(id);
-
-		scr();
-
-		fseek(file, 0, SEEK_SET);
-
-
-		
-		while( !feof(file) && fread(&aux, sizeof(PROJECT), 1, file) ) {
-						
-			if ( (compare(aux.id, id) ) == 0 || strcmp(id, aux.id) == 0 ) {
-
-				band = 1;
-
-				break;
-
-			}
-
-
-
-			puts("Verificando...");
-
-			wait(0.2);
-
-			scr();
-
-		}
-
-
-		
-		fclose(file);
-
-
-		
-		if(band == 1){
-		
-			f_menu_task(aux);
-
-			
-		} else {
-
-			printf("No hay proyecto guardado con el codigo %s\n",id);
-
-			wait(1);
-
-			scr();
-
-		}
-
-
-	} else {
-	
-		puts("\nNo hay informacion guardada.");	
-		
-	}
-	
-}
-
 
 
 /*
@@ -165,27 +81,32 @@ void f_menu_task(PROJECT project) {
 	
 
 
+	f_flush_task();
+
 	f_load_task(project);
 
+	f_sort_task(project);
 
 	
+
 	do {
+
+		scr();
 		
 		printf(	"=================================\n"
 				"= MENU ADMINISTRACION DE TAREAS =\n"
 				"=================================\n\n");
 		
-		printf("Proyecto: %s.\n\n",project.title);
+		printf("Proyecto: %s\n\n", project.title);
 			
-		printf(	"[0] Menu anterior\n"
-				"[1] Crear Tareas\n"
+		printf(	"[1] Crear Tareas\n"
 				"[2] Eliminar Tareas\n"
 				"[3] Finalizar Tareas\n"
 				"[4] Mostrar Tareas\n"
 				"[5] Reporte\n"
-				"[6] Ordenar tareas\n"
-				"[7] Fecha Fin tareas\n"
-				"[8] Vaciar papelera\n\n"
+				"[6] Fecha Fin tareas\n"
+				"[7] Vaciar papelera\n"
+				"[0] Menu anterior\n\n"
 				"Opcion => [ ]\b\b");
 
 		scanf("%i", &op);
@@ -200,10 +121,6 @@ void f_menu_task(PROJECT project) {
 			
 			case 0:
 				
-				f_save_task(project);
-
-				wait(1);
-								
 				break;
 
 			
@@ -240,6 +157,8 @@ void f_menu_task(PROJECT project) {
 			case 4:
 			
 				f_show_task(project);
+
+				getchar();
 				
 				break;
 			
@@ -252,20 +171,13 @@ void f_menu_task(PROJECT project) {
 
 				
 			case 6:
-				
-				f_sort_task(project);
-				
-				break;
-
-				
-			case 7:
 			
 				f_end_task(project);
 				
 				break;
 
 			
-			case 8:
+			case 7:
 				
 				f_abso_del_task(project);
 				
@@ -292,67 +204,72 @@ void f_menu_task(PROJECT project) {
 
 void f_load_task(PROJECT project) {
 	
-	char name_file[10];
-	sprintf(name_file, "%s.bin", project.id);
-	FILE *file = fopen(name_file, "ab");
+	FILE *file;
+	LIST *aux;
+	TASK task;
+
+
+
+	file = fopen(name_file, "rb+");
 	
 
 
 	if (file == NULL) {
 
-		puts("Error");
+		file = fopen(name_file, "ab");
+
+		fclose(file);
 
 		
 	} else {
-		
-		LIST *aux;
-		TASK task;
-
-
 		
 		fseek(file, 0, SEEK_SET);
 
 
 		
-		while( !feof(file) && fread(&task, sizeof(TASK), 1, file) ) {
+		while( fread(&task, sizeof(TASK), 1, file) && !feof(file) ) {
 			
-			aux = (LIST *) malloc (sizeof(LIST));
-			
+			if ( compare(task.p_id, project.id) == 0 && !task.del) {
 
-
-			if (aux == NULL) {
-				
-				puts("Fatal Error");
-				
-
-			} else {
-				
-				aux -> task = task;
-			
-				aux -> next = NULL;
+				aux = (LIST *) malloc (sizeof(LIST));
 				
 
 
-				if (head == NULL) {
+				if (aux == NULL) {
 					
-					head = aux;
-					
-					tail = aux;
+					puts("Fatal Error");
 					
 
 				} else {
 					
-					tail -> next = aux;
+					aux -> task = task;
+				
+					aux -> next = NULL;
 					
-					tail = aux;
+
+
+					if (head == NULL) {
+						
+						head = aux;
+						
+						tail = aux;
+						
+
+					} else {
+						
+						tail -> next = aux;
+						
+						tail = aux;
+						
+					}
 					
 				}
-				
+
 			}
 
 
 
-			puts("Cargando tareas");
+			/*puts("Cargando tareas");
 
 			wait(0.2);
 
@@ -360,7 +277,7 @@ void f_load_task(PROJECT project) {
 
 			wait(0.2);
 
-			scr();
+			scr();*/
 
 		}
 
@@ -368,15 +285,14 @@ void f_load_task(PROJECT project) {
 		
 		//puts("Tareas cargadas!");
 
-		wait(1);
+		/*wait(1);
 
-		scr();
+		scr();*/
+
+		fclose(file);
 
 	}
-
-
 		
-	fclose(file);
 }
 
 /*
@@ -385,67 +301,16 @@ void f_load_task(PROJECT project) {
 	----------------------------------------------------------------------
 */
 
-void f_save_task(PROJECT project) {
+void f_save_task(TASK aux) {
 	
 	FILE *file;
-	LIST *aux;
-
-
-
-	scr();
-	
-
-
-	if(head == NULL) {
-		
-		puts("No hay tareas para guardar");
-		
-
-	} else {
-		
-		char name_file[15];
-		sprintf(name_file, "%s.bin", project.id);
-		file = fopen(name_file, "wb");
 
 
 		
-		aux = head;
+	file = fopen(name_file, "ab");
+
+	fwrite(&aux, sizeof(TASK), 1, file);
 		
-
-
-		while ( aux != NULL && fwrite(&aux -> task, sizeof(TASK), 1, file) ) {
-
-			aux = aux -> next;
-
-		}
-		
-
-
-		while(head != NULL) {
-			
-			free(head);
-			
-			head = head -> next;
-
-		}
-
-
-
-		puts("Guardando tareas.");
-
-		wait(0.5);
-
-		puts("Espere...\n");
-
-		wait(1);
-
-		puts("Tareas guardadas.");
-
-		wait(1);
-		
-	}
-
-	
 	fclose(file);
 
 }
@@ -457,45 +322,51 @@ void f_save_task(PROJECT project) {
 */
 
 void f_show_all_task(PROJECT project) {
-	
-	LIST *aux;
+
+	FILE *file;
+	TASK aux;
+	file = fopen(name_file, "rb");
 
 
 
-	scr();
+	if (file == NULL) {
+
+		puts("Error al abrir el archivo"); 
+
+		getchar(); 
+
+		scr();
 
 
-	
-	if (head != NULL) {
-		
-		aux = head;
-		
-		printf("%9s\t%6s\t%3s\t%10s\t%10s\t%10s\n", "Nombre", "Estatus", "Del", "Inicio", "Fin", "Proyecto");
+	} else {
 
-		printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+		while ( fread(&aux, sizeof(TASK), 1, file) && !feof(file) ) {
+
+			printf("Nombre: %s\n\n", aux.ref);
+
+			printf("Descripcion: %s\n\n", aux.information);
+
+			printf("Estatus: %d\n", aux.status);
+
+			printf("Eliminado: %d\n", aux.del);
+
+			printf("Fecha de inicio: %i-%i-%i\n", aux.start.day, aux.start.month, aux.start.year);
+
+			printf("Fecha de fin: %i-%i-%i\n", aux.end.day, aux.end.month, aux.end.year);
+
+			printf("Proyecto: %s\n\n", aux.p_id);
+
+			}
 
 
 
-		while (aux != NULL){
-			
-			printf("%9s\t", aux -> task.ref);
+			puts("");
 
-			printf("%6i\t", aux -> task.status);
-
-			printf("%3i\t", aux -> task.del);
-
-			printf("%2i-%2i-%4i\t", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year);
-
-			printf("%2i-%2i-%4i\t", aux -> task.end.day, aux -> task.end.month, aux -> task.end.year);
-
-			printf("%10s\n",aux -> task.p_id);
-					
-			aux = aux -> next;		
-
-		}
-		
 	}
-	
+
+
+	fclose(file);
+
 }
 
 /*
@@ -629,8 +500,12 @@ void f_show_all_task(PROJECT project) {
 void f_del_task(PROJECT project) {
 	
 	LIST *aux;
+	FILE *file;
+	TASK temp;
 
 
+
+	file = fopen(name_file, "rb+");
 
 	scr();
 	
@@ -718,6 +593,26 @@ void f_del_task(PROJECT project) {
 
 					wait(1.5);
 
+					fseek(file, 0, SEEK_SET);
+
+
+
+					while ( fread(&temp, sizeof(TASK), 1, file) && !feof(file) ) {
+
+						if ( (compare(name, temp.ref) == 0) && temp.del == 0 ) {
+
+							fseek(file, ftell(file) - sizeof(TASK), SEEK_SET);
+
+							temp.del = 1;
+
+							fwrite(&temp, sizeof(TASK), 1, file);
+
+							break;
+
+						} 
+
+					}
+
 					puts("Tarea Eliminada");
 
 					wait(1);
@@ -751,6 +646,10 @@ void f_del_task(PROJECT project) {
 		}
 
 	}
+
+
+
+	fclose(file);
 	
 }
 /*
@@ -911,10 +810,12 @@ void f_show_task(PROJECT project) {
 		
 		aux = head;
 		
-		printf("%15s\t%15s\t%10s\t%10s\t%10s\n", "Nombre", "Estatus", "Inicio", "Fin", "Proyecto");
 
-		puts("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		
+
+		printf(	"=================\n"
+				"=     TAREAS    =\n"
+				"=================\n\n");
+
 
 
 		while (aux != NULL) {
@@ -925,41 +826,49 @@ void f_show_task(PROJECT project) {
 					
 					if ( aux -> task.end.day != 0 && aux -> task.end.month != 0 ) {
 						
-						printf("%15s\t", aux -> task.ref);
+						printf("Nombre: %s\n\n", aux -> task.ref);
 
-						printf("%15s\t", "En ejecucion");
+						printf("Descripcion: %s\n\n", aux -> task.information);
 
-						printf("%3s%i-%i-%i\t", " ", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year);
-						printf("%i-%i-%i\t", aux -> task.end.day, aux -> task.end.month, aux -> task.end.year);
-						printf("%10s", aux -> task.p_id);
+						printf("Estatus: %s\n", "En ejecucion");
+
+						printf("Fecha de inicio: %i-%i-%i\n", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year);
+
+						printf("Fecha de fin: %i-%i-%i\n", aux -> task.end.day, aux -> task.end.month, aux -> task.end.year);
+
+						printf("Proyecto: %s\n\n", aux -> task.p_id);
 
 
 					} else {
 						
-						printf("%15s\t", aux -> task.ref);
+						printf("Nombre: %s\n\n", aux -> task.ref);
 
-						printf("%15s\t", "En ejecucion");
+						printf("Descripcion: %s\n\n", aux -> task.information);
 
-						printf("%3s%i-%i-%i\t", " ", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year);
+						printf("Estatus: %s\n", "En ejecucion");
 
-						printf("%10s\t", "-------");
+						printf("Fecha de inicio: %i-%i-%i\n", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year);
 
-						printf("%10s", aux -> task.p_id);
+						printf("Fecha de fin: %s\n", "-------");
+
+						printf("Proyecto: %s\n\n", aux -> task.p_id);
 
 					}
 				
 
 				} else {	
 					
-					printf("%15s\t", aux -> task.ref);
+					printf("Nombre: %s\n\n", aux -> task.ref);
 
-					printf("%15s\t", "Terminado");
+					printf("Descripcion: %s\n\n", aux -> task.information);
 
-					printf("%3s%i-%i-%i\t", " ", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year);
+					printf("Estatus: %s\n", "Terminado");
 
-					printf("%i-%i-%i\t", aux -> task.end.day, aux -> task.end.month, aux -> task.end.year);
+					printf("Fecha de inicio: %i-%i-%i\n", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year);
 
-					printf("%10s", aux -> task.p_id);
+					printf("Fecha de fin: %i-%i-%i\n", aux -> task.end.day, aux -> task.end.month, aux -> task.end.year);
+
+					printf("Proyecto: %s\n\n", aux -> task.p_id);
 				
 				}
 					
@@ -974,10 +883,6 @@ void f_show_task(PROJECT project) {
 			aux = aux -> next;
 
 		}
-
-
-
-		puts("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
 	}
 	
@@ -1083,16 +988,16 @@ void f_sort_task(PROJECT project) {
 	
 
 
-	if(head == NULL) {
+	if (head == NULL) {
 		
 		puts("No hay datos en la lista.");
 
 		
 	} else {
 		
-		puts("Ordenar Tarea.\n");
+		/*puts("Ordenar Tarea.\n");
 
-		wait(0.3);
+		wait(0.3);*/
 
 		actual = head;
 		
@@ -1104,7 +1009,8 @@ void f_sort_task(PROJECT project) {
 
 		while ( next != NULL ) {
 			
-			if ( f_compare_dt(actual -> task.start, next -> task.start) == 1 ) {
+			if (f_compare_dt(actual -> task.start, next -> task.start) == 1 || 
+				f_compare_dt(actual -> task.start, next -> task.start) == 0) {
 				
 				if (prev == NULL) {
 					
@@ -1154,7 +1060,7 @@ void f_sort_task(PROJECT project) {
 
 
 
-			scr();
+			/*scr();
 
 			puts("Se estan organizando las tareas.");
 
@@ -1164,17 +1070,17 @@ void f_sort_task(PROJECT project) {
 
 			wait(0.6);
 
-			scr();
+			scr();*/
 			
 		}
 
 
 
-		puts("Se han organizado las tareas.");
+		/*puts("Se han organizado las tareas.");
 
 		wait(1);
 
-		scr();
+		scr();*/
 
 	}
 	
@@ -1199,12 +1105,12 @@ void f_end_task(PROJECT project) {
 	
 	if (head == NULL) {
 		
-		puts("No hay datos guardados.");
+		puts("No hay datos guardados");
 		
 
 	} else {
 
-		puts("Finalizar tarea.\n");
+		puts("Finalizar tarea\n");
 
 		aux = head;
 		
@@ -1257,108 +1163,103 @@ void f_end_task(PROJECT project) {
 
 void f_abso_del_task(PROJECT project) {
 	
-	LIST *aux;
-
-
+	FILE *filep;
+	FILE *filep_aux;
+	TASK aux;
+	int del, v, op;
 	
-	if(head == NULL) {
-		
-		puts("No hay tareas en la lista.");
-		
+
+
+	filep = fopen(name_file, "rb");
+
+	filep_aux = fopen("temp.bin", "wb");
+			
+
+
+	if ( filep == NULL || filep_aux == NULL) {
+
+		puts("Error al abrir el archivo");
+
+		getchar();
+
+		scr();
+
 
 	} else {
-		
-		int op, i = 0;
-		
-
-
-		aux = head;
-		
-
 
 		do {
 
-			printf(	"Desea borrar permanentemente las tareas?\n\n"
-					"1.Si\n"
-					"2.No\n\n"
-					"Opcion => [ ]\b\b");
+			scr();
 
-			scanf("%i", &op);
+			printf("Desea borrar permanentemente las tareas?\n\n");
 
-			buf();
-			
+			printf(	"[1] Si\n"
+					"[2] No\n\n"
+					"Opcion => [ ]\b\b"); 
 
-
-			if ( op != 1 && op != 2 ) {
-				
-				puts("Opcion incorrecta.");
-				
-			}		
-			
-		} while ( op != 1 && op != 2 );
+			v = scanf("%d", &op);	buf();
 
 
-		
+
+			if ( !v || !(op >= 1 && op <= 2) ) {
+
+				puts("Error, opcion incorrecta, presione una tecla para continuar...");
+
+				getchar();
+
+				scr();
+
+			}
+
+		} while ( !v || !(op >= 1 && op <= 2) );
+
+
+
 		if (op == 1) {
-			
-			if (aux -> task.del == 1) {
-			
-				head = aux -> next;
 
-				free(aux);
-
-				i++;
-
-				scr();
-
-				puts("Eliminando...");
-				
-				wait(0.2);
-				
-				scr();
-
-			}
+			del = 0;
 
 
-			
-			while (aux -> next != NULL) {
-				
-				if(aux -> next -> task.del == 1) {
-					
-					aux -> next = aux -> next -> next;
 
-					i++;
+			while ( fread(&aux, sizeof(TASK), 1, filep) && !feof(filep)) {
 
-					free(aux -> next);
+				if (aux.del != 1) {
 
-				
-				} else {
-					
-					aux = aux -> next;
-					
+					fwrite(&aux, sizeof(TASK), 1, filep_aux);
+
+					del = 1;
+
 				}
-			
+
 			}
 
-
-			
-			printf("Se han eliminado %i elementos permanentemente.",i);
-
-			wait(1);
-
-			scr();
+		} 
 
 
-		} else {
-			
-			puts("No se ha vaciado la papelera.");
+
+		if (del == 1) {
+
+			scr();	
+
+			puts("Espere...");	
 
 			wait(1);
 
-			scr();
+			puts("Usuarios eliminados correctamente");	
+
+			wait(0.75);
 
 		}
 
+
+
+		fclose(filep);
+
+		fclose(filep_aux);
+		
+		remove(name_file);
+
+		rename("temp.bin", name_file);
 	}
 		
 }
@@ -1428,6 +1329,7 @@ void f_menu_add_task(PROJECT project) {
 void f_add_task(PROJECT project) {
 	
 	LIST *task, *aux;
+	FILE *file;
 	
 
 
@@ -1448,8 +1350,6 @@ void f_add_task(PROJECT project) {
 		
 		if (f_cnt_task() == 1) {
 		
-			FILE *file;
-			char name_file[15];
 			char rep;
 			int band = 0, band2 = 0, band3 = 1;
 		
@@ -1457,10 +1357,10 @@ void f_add_task(PROJECT project) {
 
 			aux = head;
 			
-			sprintf(name_file,"%s.bin", project.id);
-			
 			file = fopen(name_file, "ab");
+
 			
+
 			if (file == NULL) {
 				
 				puts("Error al abrir el archivo");
@@ -1479,6 +1379,12 @@ void f_add_task(PROJECT project) {
 					printf("Nombre: ");
 
 					gets(task -> task.ref);
+
+					puts("");
+
+					printf("Descripcion: ");
+
+					gets(task -> task.information);
 
 					puts("");
 					
@@ -1664,6 +1570,8 @@ void f_add_task(PROJECT project) {
 
 					puts("Tarea Creada!\n\n");
 
+					f_save_task(task -> task);
+
 					wait(1);
 
 					scr();
@@ -1728,6 +1636,10 @@ void f_add_task(PROJECT project) {
 		}
 		
 	}
+
+
+
+	fclose(file);
 
 }
 
@@ -2172,6 +2084,39 @@ int f_cnt_task() {
 	} else 
 
 		return 1;
+
+}
+
+
+
+void f_flush_task(void) {
+
+	LIST *tmp;
+
+
+
+	while (1) {
+
+		tmp = head;
+
+
+
+		if (tmp == NULL) {
+
+			break;
+
+
+		} else {
+
+			head = head -> next;
+
+			free(tmp);
+
+		}
+
+	}
+
+
 
 }
 
