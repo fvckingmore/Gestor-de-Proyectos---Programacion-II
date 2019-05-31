@@ -31,6 +31,40 @@ typedef struct DT{
 } DT;
 
 
+typedef struct TASK {
+	
+	DT start, end;
+	int del, status;
+	char ref[10], p_id[10], user[50];
+	char information[100];
+	
+} TASK;
+
+
+typedef struct LIST {
+
+	TASK task;
+	struct LIST *next;
+
+} LIST;
+
+
+typedef struct USER {	//ESTRUCTURA TIPO USUARIO
+
+	char username[15], password[15], name[40];
+	int level, del, id, admin_id;
+
+} USER;
+
+
+typedef struct PROJECT {
+
+	char title[20], id[10];
+	DT start, end;
+	int del, status;	
+	char louder[25], infor[100], location[30];
+	
+} PROJECT;
 
 //===========
 /*FUNCIONES*/

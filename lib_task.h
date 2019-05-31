@@ -7,38 +7,13 @@
 #include <stdlib.h>
 #include "misc.h"
 #include "lib_user.h"
+#include "lib_project.h"
+
 #define name_file "task.bin"
 
 
 
-typedef struct TASK {
-	
-	DT start, end;
-	int del, status;
-	char ref[10], p_id[10], user[50];
-	char information[100];
-	
-} TASK;
-
-
-typedef struct LIST {
-
-	TASK task;
-	struct LIST *next;
-
-} LIST;
-
 LIST *head = NULL, *tail = NULL;
-
-
-typedef struct PROJECT {	//TEMPORAL
-
-	DT start, end;
-	char title[20], id[10];
-	int del, status;	
-
-} PROJECT;
-
 
 
 int f_cnt_task();
@@ -60,7 +35,7 @@ void f_menu_add_task(PROJECT project);
 void f_add_task(PROJECT project);
 void f_add_last_task(PROJECT project);
 void f_finish_task(PROJECT project);
-
+void f_edit_task(PROJECT project);
 
 
 /*int main(){
@@ -82,13 +57,13 @@ void f_menu_task(PROJECT project) {
 	int op;
 	
 
-
 	f_flush_task();
-
+	getchar();
 	f_load_task(project);
+	getchar();
 
 	f_sort_task(project);
-
+	getchar();
 	
 
 	do {
@@ -804,7 +779,7 @@ void f_print_report_task(PROJECT project) {
 
 		scr();
 		
-		aux=head;
+		aux = head;
 		 
 		fprintf(file,"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 		fprintf(file,"- Proyecto   %s                             -\n",project.title);
@@ -818,12 +793,12 @@ void f_print_report_task(PROJECT project) {
 			
 			if (aux -> task.status == 1) {
 				
-				fprintf(file, "|%10s\t%10s\t%2i-%2i-%4i\t%2i-%2i-%4i|\n", aux->task.ref, "Terminado", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year, aux -> task.end.day, aux -> task.end.month, aux -> task.end.year);
+				fprintf(file, "|%10s\t%10s\t%2i-%2i-%4i\t%2i-%2i-%4i|\n", aux -> task.ref, "Terminado", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year, aux -> task.end.day, aux -> task.end.month, aux -> task.end.year);
 				
 
 			} else {
 				
-				fprintf(file,"|%10s\t%10s\t%2i-%2i-%4i\t%8s|\n", aux->task.ref, "En ejecucion", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year, "----------");
+				fprintf(file,"|%10s\t%10s\t%2i-%2i-%4i|\n", aux->task.ref, "En ejecucion", aux -> task.start.day, aux -> task.start.month, aux -> task.start.year);
 
 			}
 			
@@ -870,7 +845,7 @@ void f_sort_task(PROJECT project) {
 	
 	LIST *actual, *prev, *next;
 	
-
+	
 
 	if (head == NULL) {
 		
@@ -892,10 +867,10 @@ void f_sort_task(PROJECT project) {
 
 
 		while ( next != NULL ) {
-			
-			if (f_compare_dt(actual -> task.start, next -> task.start) == 1 || 
-				f_compare_dt(actual -> task.start, next -> task.start) == 0) {
-				
+
+			if (f_compare_dt(actual -> task.start, next -> task.start) == 1 /*|| 
+				f_compare_dt(actual -> task.start, next -> task.start) == 0*/) {
+
 				if (prev == NULL) {
 					
 					head = next;
@@ -916,7 +891,7 @@ void f_sort_task(PROJECT project) {
 				}
 				
 
-
+				
 				actual = head;
 				
 				next = actual -> next;
@@ -942,7 +917,7 @@ void f_sort_task(PROJECT project) {
 				
 			}
 
-
+	
 
 			/*scr();
 
@@ -1235,7 +1210,7 @@ void f_add_task(PROJECT project) {
 
 	} else {
 		
-		if (f_cnt_task() == 1) {
+		if (f_cnt_task() <= 20) {
 		
 			char rep;
 			int band = 0, band2 = 0, band3 = 1;
@@ -1458,16 +1433,154 @@ void f_add_task(PROJECT project) {
 						if ( band == 1 && band2 == 1 ) break;
 						
 					} while (1);
+					
+					do {
 
+						band = 0;
+						
+						puts("Fecha Fin (dd/mm/aaaa): \n");
+						
+						printf("Dia: ");
+
+						scanf("%i", &task->task.end.day);
+
+						buf();
+
+						printf("Mes: ");
+
+						scanf("%i", &task -> task.end.month);
+
+						buf();
+						
+						printf("Anio: ");
+
+						scanf("%i", &task -> task.end.year);
+
+						buf();
+
+						
+						
+						if ((task -> task.end.year < 2030) && 
+							(task -> task.end.year > 2000)) {
+							
+							if ((task->task.end.month == 2) && 
+								(task -> task.end.day < 29) && 
+								(task -> task.end.day > 0)) {
+								
+								band = 1;
+
+								
+							} else if ( (task -> task.end.month == 1) || 
+										(task -> task.end.month == 3) || 
+										(task -> task.end.month == 5) || 
+										(task -> task.end.month == 7) || 
+										(task -> task.end.month == 8) || 
+										(task -> task.end.month == 10) || 
+										(task -> task.end.month == 12) ) {
+								
+								if (task -> task.end.day < 32 && 
+									task->task.end.day > 0) {
+									
+									band = 1;
+									
+								}			
+
+
+							} else if ( (task -> task.end.month == 4) || 
+										(task -> task.end.month == 6) || 
+										(task -> task.end.month == 9) || 
+										(task -> task.end.month == 11) ){
+								
+								if (task -> task.end.day < 31 && 
+									task->task.end.day > 0) {	
+									
+									band=1;
+
+								}
+														
+							}
+
+
+						} else if ( (task -> task.end.year % 4) == 0 ) {
+							
+							if ((task -> task.end.month == 2) && 
+								(task -> task.end.day < 30) && 
+								(task -> task.end.day > 0)) {
+								
+								band = 1;
+								
+
+							} else if ( (task -> task.end.month == 1) || 
+										(task -> task.end.month == 3) || 
+										(task -> task.end.month == 5) || 
+										(task -> task.end.month == 7) || 
+										(task -> task.end.month == 8) || 
+										(task -> task.end.month == 10) || 
+										(task -> task.end.month == 12) ) {
+								
+								if (task -> task.end.day < 32 && 
+									task -> task.end.day > 0) {
+									
+									band = 1;
+									
+								}			
+
+
+							} else if ( (task -> task.end.month == 4) || 
+										(task -> task.end.month == 6) || 
+										(task -> task.end.month == 9) || 
+										(task -> task.end.month == 11) ) {
+								
+								if (task -> task.end.day < 31 && 
+									task -> task.end.day > 0) {	
+									
+									band = 1;
+
+								}
+														
+							}
+							
+						}
+
+
+
+						if (band == 0) {
+						
+							puts("Ingreso los datos de forma incorrecta\n\nFecha: (dd/mm/aaaa)");
+						
+						}
+						
+						//SE EVALUA SI LA FECHA DE INICIO DE LAS TAREAS ES MAYOR A LA DEL PROYECTO	
+						if (f_compare_dt(task -> task.end, task -> task.start) == 1 || 
+							f_compare_dt(task -> task.end, task -> task.start) == 0) {
+							
+							band2 = 1;
+							
+
+						} else {
+							
+							puts("\nRecuerde que la fecha de final de la tarea debe ser la misma o \nposterior de la fecha de inicio");
+							
+							band = 0;
+						
+						}
+						
+						printf("%i-%i-%i",task->task.end.day,task->task.end.month,task->task.end.year);
+												
+
+						puts("\n");
+						
+						
+						
+						if ( band == 1 && band2 == 1 ) break;
+						
+					} while (1);
 
 					
 					task -> task.status = 0;
 					
 					task -> task.del = 0;
 					
-					task -> task.end.day = 0;
-					task -> task.end.month = 0;
-					task -> task.end.year = 0;
 					
 					strcpy(task -> task.p_id, project.id);			
 					
@@ -1562,7 +1675,7 @@ void f_add_task(PROJECT project) {
 			scr();
 
 		}
-		
+
 	}
 
 
@@ -1997,22 +2110,11 @@ int f_cnt_task() {
 
 		}	
 
-
-		
-		if (i <= 20)
-
-			return 1;
+		return i;
+	}
 
 
-		else 
-
-			return 0;
-
-
-	} else 
-
-		return 1;
-
+	return 0;	
 }
 
 
@@ -2146,7 +2248,7 @@ void f_finish_task(PROJECT project) {
 
 
 
-					do {
+	/*				do {
 			
 						puts("Fecha de Finalizacion (dd/mm/aaaa): \n\n");
 						
@@ -2288,7 +2390,7 @@ void f_finish_task(PROJECT project) {
 					} while (1);
 
 
-					
+					*/
 					scr();
 
 					wait(0.5);
@@ -2309,11 +2411,6 @@ void f_finish_task(PROJECT project) {
 
 							temp.status = 1;
 
-							temp.end.year = task -> task.end.year;
-
-							temp.end.month = task -> task.end.month;
-
-							temp.end.day = task -> task.end.day;
 
 							fwrite(&temp, sizeof(TASK), 1, file);
 

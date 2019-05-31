@@ -16,7 +16,8 @@ PARA ENTRAR EN MODO DEBUG, AL INGRESAR LA OPCION TECLEAR " 1234 "
 #include <string.h>
 #include <time.h>
 #include "misc.h"
-
+#include "lib_project.h"
+#include "lib_task.h"
 
 //DEFINE LIBRERIAS SEGUN LA PLATAFORMA EN LA CUAL SE TRABAJA
 
@@ -29,16 +30,12 @@ PARA ENTRAR EN MODO DEBUG, AL INGRESAR LA OPCION TECLEAR " 1234 "
 
 
 
+
+
 //=============
 /*ESTRUCTURAS*/	
 //=============
 
-typedef struct USER {	//ESTRUCTURA TIPO USUARIO
-
-	char username[15], password[15], name[40];
-	int level, del, id, admin_id;
-
-} USER;
 
 
 
@@ -690,7 +687,7 @@ void f_standar_menu(USER user) {
 
 			case 1: 
 
-				//f_find_project();
+				f_find_project();
 
 				/*puts("Buscar");*/
 
@@ -701,7 +698,7 @@ void f_standar_menu(USER user) {
 
 				/*puts("Tareas");*/
 
-				//f_verify_id_project();
+				f_verify_project_id();
 
 				break;
 
@@ -709,8 +706,9 @@ void f_standar_menu(USER user) {
 
 			case 3: 
 
-				puts("Grafica");
-
+				//puts("Grafica");
+				f_printf_gantt();
+				
 				break;
 
 
@@ -797,15 +795,15 @@ void f_admin_menu(USER user) {
 
 				/*puts("Administrar proyectos");*/
 
-				//f_menu_project();
+				f_menu_project();
 
 				break;
 
 
 			case 3: 
 
-				puts("Grafica");
-
+				f_printf_gantt();
+				
 				break;
 
 
