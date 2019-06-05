@@ -23,11 +23,10 @@ int main(void) {
 
 			scr();
 
-			puts("BIENVENIDO");
-
-			puts("1. Ingresar\n0. Salir\n");
-
-			printf("Opcion => ");
+			printf(	"BIENVENIDO\n\n"
+					"1. Ingresar\n"
+					"0. Salir\n\n"
+					"Opcion => ");
 
 			v = scanf("%d", &op);	buf();
 
@@ -57,15 +56,19 @@ int main(void) {
 
 					scr(); 
 
-					//scrw();
-
 					puts("Entrando a modo debbug");
 
-					system("sleep 1.5");
+					#ifdef __linux__
+
+						system("sleep 1.5");
+
+					#elif _WIN32
+
+						Sleep(1500);
+
+					#endif
 
 					scr();
-
-					//scrw();
 
 					f_show_all_users();
 
@@ -73,7 +76,7 @@ int main(void) {
 
 				} else if (op == 0) {
 
-					scr(); puts("Hasta luego"); getchar(); break;
+					scr(); puts("Hasta luego"); break;
 
 				} else {
 
@@ -100,7 +103,9 @@ int main(void) {
 	
 
 
-	if (1 == 0){	//DESACTIVADO
+	//DESACTIVADO
+
+	if (1 == 0){	
 
 		do {
 
@@ -140,7 +145,9 @@ int main(void) {
 
 		} while ( !v || !( op >= 0 && op <= 1 ) );
 
-	}				//DESACTIVADO
+	}				
+
+	//DESACTIVADO
 
 	
 
